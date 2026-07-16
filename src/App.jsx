@@ -25,11 +25,21 @@ function App() {
       {/* 🚀 1. INSPIRING WELCOME PORTAL OVERLAY */}
       {!hasEntered && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950 overflow-hidden">
-          {/* Futuristic subtle background effects */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-lime-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+          
+          {/* Background Image with slightly higher opacity and a slow scale animation */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-45 scale-100 transition-transform duration-1000"
+            style={{ backgroundImage: "url('/welcome-bg.jpeg')" }}
+          ></div>
+          
+          {/* Subtle Cyber Grid Lines overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"></div>
+          
+          {/* Enhanced Radial Center Glow behind the card */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-lime-500/15 rounded-full blur-[140px] pointer-events-none"></div>
 
-          <div className="relative text-center max-w-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl shadow-lime-950/20 border-t-lime-500/30">
+          {/* Welcome Card Content with a subtle lime-glow shadow */}
+          <div className="relative text-center max-w-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl shadow-lime-500/10 border-t-lime-500/30">
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-4 py-1.5 rounded-full border border-lime-800/50 mb-6">
               <Sparkles size={14} className="animate-pulse" />
               Empowering Digital Infrastructure
@@ -45,27 +55,35 @@ function App() {
 
             {/* Business Pillars Quick List */}
             <div className="grid grid-cols-3 gap-3 mb-10 text-xs text-slate-400 font-medium">
-              <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-800/60">
+              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800/60 backdrop-blur-sm">
                 <Cpu size={16} className="mx-auto mb-2 text-lime-400" />
                 Tailored Systems
               </div>
-              <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-800/60">
+              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800/60 backdrop-blur-sm">
                 <Network size={16} className="mx-auto mb-2 text-lime-400" />
                 Robust Networks
               </div>
-              <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-800/60">
+              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800/60 backdrop-blur-sm">
                 <ShieldCheck size={16} className="mx-auto mb-2 text-lime-400" />
                 Absolute Security
               </div>
-            </div>
+            </div> {/* <-- Closed this div correctly! */}
 
-            <button 
-              onClick={() => setHasEntered(true)}
-              className="inline-flex items-center gap-3 bg-lime-400 text-slate-950 font-bold px-8 py-4 rounded-xl hover:bg-lime-300 transition-all duration-300 cursor-pointer shadow-lg shadow-lime-400/10 hover:shadow-lime-400/20 group text-base"
-            >
-              Access Business Console
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            {/* Explore Services Button and guide text */}
+            <div className="flex flex-col items-center gap-3">
+              <button 
+                onClick={() => setHasEntered(true)}
+                className="inline-flex items-center gap-3 bg-lime-400 text-slate-950 font-bold px-8 py-4 rounded-xl hover:bg-lime-300 transition-all duration-300 cursor-pointer shadow-lg shadow-lime-400/10 hover:shadow-lime-400/20 group text-base"
+              >
+                Explore Services
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+              
+              {/* Elegant, soft guiding text under the button */}
+              <span className="text-xs italic text-slate-400 tracking-wide select-none animate-pulse">
+                Click to view our custom network designs, OS setups, and automation tools
+              </span>
+            </div>
           </div>
         </div>
       )}
