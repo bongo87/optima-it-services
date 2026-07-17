@@ -10,7 +10,9 @@ import {
   ArrowRight,
   ShieldCheck,
   Cpu,
-  Sparkles
+  Sparkles,
+  ArrowLeft,
+  LogOut
 } from 'lucide-react';
 
 function App() {
@@ -107,11 +109,93 @@ function App() {
 
       case 'network':
         return (
-          <div>
-            <h1 className="text-3xl font-extrabold text-white">Network Design & Cost Estimation</h1>
-            <p className="text-slate-400 text-sm mt-1">Simulated corporate architectures and infrastructure budgeting.</p>
-            <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
-              Interactive network calculator workspace coming soon...
+          <div className="max-w-4xl">
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
+            
+            <header className="mb-8">
+              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
+                Enterprise Consulting Phase
+              </span>
+              <h1 className="text-3xl font-extrabold text-white mt-3">Network Architecture & Infrastructure Budgeting</h1>
+              <p className="text-slate-400 text-sm mt-1">Our end-to-end engineering pipeline for designing scalable, secure corporate environments.</p>
+            </header>
+
+            {/* THE PIPELINE STEPS */}
+            <div className="space-y-6 mt-8">
+              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Engineering Process</h2>
+              
+              {/* Step 1 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Layers size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">1. Site Assessment & Requirements Gathering</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    We analyze your facility's physical dimensions, floor plans, and total number of individual offices. By mapping your organizational layout alongside your projected business budget, we establish a baseline for your hardware density targets.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Cpu size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">2. Topology Simulation & Device Calculation</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    Using advanced modeling platforms like **Cisco Packet Tracer**, we construct a complete software replica of your future network topology. We calculate the exact distribution of core edge routers, managed PoE switches, multilayer switches, dual-band access points (APs), dedicated servers, and structured copper/fiber cabling runs.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">3. Security Hardening & Isolation Layering</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    We engineer network security straight into the core blueprint. This includes partitioning departments using Virtual LANs (VLANs), configuring robust Access Control Lists (ACLs), and setting up encrypted corporate Wi-Fi authentication alongside secure guest portals.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Terminal size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">4. Comprehensive Hardware Procurement & Quotation Delivery</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    We return to you with a fully itemized, transparent quotation package. This contains accurate wholesale pricing for all recommended physical devices, structured cabling assessments, labor estimations for hardware installation, and a direct visual overview of your simulated network structure.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION BUTTON BAR */}
+            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Ready to engineer your workspace network?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Submit your building dimensions and deployment criteria through our assessment desk.</p>
+              </div>
+              <button 
+                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Infrastructure Consultation
+                <ArrowRight size={14} />
+              </button>
             </div>
           </div>
         );
@@ -119,17 +203,31 @@ function App() {
       case 'os':
         return (
           <div>
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
             <h1 className="text-3xl font-extrabold text-white">OS Deployment & Software Suites</h1>
             <p className="text-slate-400 text-sm mt-1">Enterprise environment clean builds and optimization tools.</p>
             <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
               System imaging configuration dashboard coming soon...
             </div>
           </div>
-        ); // Fixed: Properly closed this div and case block here!
+        );
 
       case 'software':
         return (
           <div>
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
             <h1 className="text-3xl font-extrabold text-white">Custom Software & Task Automation</h1>
             <p className="text-slate-400 text-sm mt-1">Automating data flows and specialized standalone application scripting.</p>
             <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
@@ -141,6 +239,13 @@ function App() {
       case 'diagnostics':
         return (
           <div>
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
             <h1 className="text-3xl font-extrabold text-white">System Diagnostics & Security Hardening</h1>
             <p className="text-slate-400 text-sm mt-1">Malware mitigation strategies and authentication defense protocols.</p>
             <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
@@ -279,16 +384,34 @@ function App() {
             </nav>
           </div>
 
-          <div className="border-t border-slate-800 pt-4 flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-full bg-lime-500 font-bold text-slate-950 flex items-center justify-center shrink-0">
-              RM
-            </div>
-            {isExpanded && (
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-semibold text-white truncate">Rebone Motswana</span>
-                <span className="text-xs text-lime-400 truncate">Administrator</span>
+          {/* Sidebar Footer with Account Info and Exit Button */}
+          <div className="border-t border-slate-800 pt-4 flex flex-col gap-3">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="w-10 h-10 rounded-full bg-lime-500 font-bold text-slate-950 flex items-center justify-center shrink-0">
+                RM
               </div>
-            )}
+              {isExpanded && (
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-semibold text-white truncate">Rebone Motswana</span>
+                  <span className="text-xs text-lime-400 truncate">Administrator</span>
+                </div>
+              )}
+            </div>
+
+            {/* 🚪 Exit Portal Button */}
+            <button
+              onClick={() => {
+                setHasEntered(false);
+                setActiveTab('overview');
+              }}
+              className={`flex items-center gap-4 p-2.5 rounded-xl text-xs font-semibold text-red-400 hover:bg-red-950/30 hover:text-red-300 transition-all cursor-pointer text-left ${
+                isExpanded ? 'w-full px-3' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+              title="Exit Portal to Welcome Page"
+            >
+              <LogOut size={16} className="shrink-0" />
+              {isExpanded && <span>Exit Welcome Page</span>}
+            </button>
           </div>
         </aside>
 
