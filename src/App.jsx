@@ -202,7 +202,7 @@ function App() {
 
       case 'os':
         return (
-          <div>
+          <div className="max-w-4xl">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
@@ -210,17 +210,92 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">OS Deployment & Software Suites</h1>
-            <p className="text-slate-400 text-sm mt-1">Enterprise environment clean builds and optimization tools.</p>
-            <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
-              System imaging configuration dashboard coming soon...
+            
+            <header className="mb-8">
+              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
+                System Optimization Phase
+              </span>
+              <h1 className="text-3xl font-extrabold text-white mt-3">OS Deployment & Software Suites</h1>
+              <p className="text-slate-400 text-sm mt-1">Standardizing machine environments with optimized operating systems and productivity baselines for individuals and teams.</p>
+            </header>
+
+            {/* THE DEPLOYMENT PROCESS */}
+            <div className="space-y-6 mt-8">
+              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Deployment Strategy</h2>
+              
+              {/* Step 1 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <MonitorCog size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">1. Clean OS Provisioning (Windows & Linux)</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    We eliminate annoying factory bloatware and background clutter by executing fresh, fully optimized operating system installations. Whether you need a lightning-fast enterprise Windows environment for your office or a specialized Linux distribution for development work, we configure the core system parameters for maximum stability.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Cpu size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">2. Driver Tuning & Precision Configuration</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    Mismatched, outdated, or generic drivers lead to sudden system freezing, lagging, and game crashes. We trace your specific hardware components (motherboards, chipsets, network cards, and graphics processing units) to inject exact, manufacturer-certified OEM drivers to unlock your machine's true potential.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Layers size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">3. Essential Software & Productivity Integration</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    We outfit your machine with a complete suite of required toolsets. From setting up licensed Microsoft 365 productivity suites for academic and corporate tasks, to configuring local email environments, media players, and structural tool dependencies so your machine is immediately ready for active use.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">4. Endpoint Security Baselines</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    No machine goes online unprotected. Every deployment receives customized local group security settings, proactive local firewalls, optimized system defender scripts, and active path automation safeguards to ensure you remain fully defended against browser threats and network vulnerabilities.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Setting up a new laptop or building a custom desktop?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us handle the entire installation, fine-tuning, and security deployment for a perfectly optimized system.</p>
+              </div>
+              <button 
+                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Machine Setup
+                <ArrowRight size={14} />
+              </button>
             </div>
           </div>
         );
 
       case 'software':
         return (
-          <div>
+          <div className="max-w-4xl">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
@@ -228,17 +303,79 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">Custom Software & Task Automation</h1>
-            <p className="text-slate-400 text-sm mt-1">Automating data flows and specialized standalone application scripting.</p>
-            <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
-              Script generator template terminal coming soon...
+            
+            <header className="mb-8">
+              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
+                Workflow Automation Phase
+              </span>
+              <h1 className="text-3xl font-extrabold text-white mt-3">Custom Software & Task Automation</h1>
+              <p className="text-slate-400 text-sm mt-1">Eliminating repetitive digital grunt work for both busy individuals and growing teams.</p>
+            </header>
+
+            {/* THE AUTOMATION PIPELINE */}
+            <div className="space-y-6 mt-8">
+              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">What We Build For You</h2>
+              
+              {/* Python Scripting */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Terminal size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Automated Python Scripts</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    If you handle large datasets, massive amounts of files, or tedious data entry, we write custom Python automation matrices. From scraping web data to auto-sorting download folders or batch-renaming hundreds of client assets, we turn hours of manual clicking into a single-click process.
+                  </p>
+                </div>
+              </div>
+
+              {/* Java Desktop Environments */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Cpu size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Specialized Standalone Applications</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    When a simple script isn't enough, we build robust, lightweight standalone desktop applications using streamlined Java environments. These utility tools feature clean interactive windows, solid internal data structures, and easy-to-use control panels tailored exactly to your unique workflow requirements.
+                  </p>
+                </div>
+              </div>
+
+              {/* Workflow Integration */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Layers size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">File & System Management Macros</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    Perfect for students, researchers, or administrators who deal with digital chaos. We create background processes that safely monitor directories, auto-backup critical databases, clean up local cache drives, and keep your primary operating storage running fast and clutter-free.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Have a tedious digital task you want to automate?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Tell us what you're doing manually, and let us write a custom tool to do it for you instantly.</p>
+              </div>
+              <button 
+                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Custom Automation
+                <ArrowRight size={14} />
+              </button>
             </div>
           </div>
         );
 
       case 'diagnostics':
         return (
-          <div>
+          <div className="max-w-4xl">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
@@ -246,10 +383,72 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">System Diagnostics & Security Hardening</h1>
-            <p className="text-slate-400 text-sm mt-1">Malware mitigation strategies and authentication defense protocols.</p>
-            <div className="mt-8 p-6 border border-dashed border-slate-800 rounded-2xl text-center text-slate-500">
-              Security audit log visualizer coming soon...
+            
+            <header className="mb-8">
+              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
+                Threat Defense & Repair Phase
+              </span>
+              <h1 className="text-3xl font-extrabold text-white mt-3">System Diagnostics & Security Hardening</h1>
+              <p className="text-slate-400 text-sm mt-1">Deep system troubleshooting, complete malware extraction, and airtight digital identity defense.</p>
+            </header>
+
+            {/* THE SECURITY MATRIX */}
+            <div className="space-y-6 mt-8">
+              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Crisis & Defense Services</h2>
+              
+              {/* Deep Troubleshooting */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <ShieldAlert size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Crash Diagnostics & BSOD Resolutions</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    If your PC or laptop is constantly freezing, stuck in boot loops, or throwing Blue Screens of Death (BSOD), we perform deep kernel-level audits. We parse system event logs, isolate faulty hardware components, repair corrupted OS registries, and restore complete machine stability.
+                  </p>
+                </div>
+              </div>
+
+              {/* Malware Extraction */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Malware, Spyware & Adware Extraction</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    If your device has been infected by malicious software, hidden miners, or tracking spyware, we execute thorough sanitization sweeps. We safely isolate threats, fully extract deep rootkits without compromising your personal files, and repair damage done to core system files.
+                  </p>
+                </div>
+              </div>
+
+              {/* Digital Identity Defense */}
+              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
+                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Identity Hardening & Credential Protection</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    Don't wait until your LinkedIn, email, or banking profiles get hijacked. We help individuals recover from unauthorized access incidents, audit current credential leaks, and implement ironclad security baselines. This includes setting up secure password vaults and deploying mandatory, hardware-linked Two-Factor Authentication (2FA) protocols.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Experiencing a security emergency or device crash?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Get immediate technical assistance to diagnose your device and secure your primary digital identities.</p>
+              </div>
+              <button 
+                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Emergency Support
+                <ArrowRight size={14} />
+              </button>
             </div>
           </div>
         );
