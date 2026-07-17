@@ -20,7 +20,7 @@ function App() {
   const [hasEntered, setHasEntered] = useState(false);
   // State to handle expanding/collapsing the left sidebar
   const [isExpanded, setIsExpanded] = useState(true);
-  // State to handle active navigation tab ("overview", "network", "os", "software", "diagnostics")
+  // State to handle active navigation tab
   const [activeTab, setActiveTab] = useState('overview');
 
   // Navigation Items configurations
@@ -126,11 +126,9 @@ function App() {
               <p className="text-slate-400 text-sm mt-1">Our end-to-end engineering pipeline for designing scalable, secure corporate environments.</p>
             </header>
 
-            {/* THE PIPELINE STEPS */}
             <div className="space-y-6 mt-8">
               <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Engineering Process</h2>
               
-              {/* Step 1 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Layers size={20} />
@@ -143,7 +141,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Step 2 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Cpu size={20} />
@@ -156,7 +153,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Step 3 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <ShieldCheck size={20} />
@@ -169,7 +165,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Step 4 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Terminal size={20} />
@@ -183,14 +178,14 @@ function App() {
               </div>
             </div>
 
-            {/* CALL TO ACTION BUTTON BAR */}
-            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
+            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h4 className="font-bold text-white text-base">Ready to engineer your workspace network?</h4>
                 <p className="text-xs text-slate-400 mt-0.5">Submit your building dimensions and deployment criteria through our assessment desk.</p>
               </div>
               <button 
-                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                onClick={() => alert("Service request form implementation coming soon!")}
                 className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
                 Request Infrastructure Consultation
@@ -219,11 +214,9 @@ function App() {
               <p className="text-slate-400 text-sm mt-1">Standardizing machine environments with optimized operating systems and productivity baselines for individuals and teams.</p>
             </header>
 
-            {/* THE DEPLOYMENT PROCESS */}
             <div className="space-y-6 mt-8">
               <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Deployment Strategy</h2>
               
-              {/* Step 1 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <MonitorCog size={20} />
@@ -236,7 +229,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Step 2 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Cpu size={20} />
@@ -249,7 +241,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Step 3 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Layers size={20} />
@@ -262,7 +253,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Step 4 */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <ShieldCheck size={20} />
@@ -276,14 +266,14 @@ function App() {
               </div>
             </div>
 
-            {/* CALL TO ACTION */}
-            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
+            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h4 className="font-bold text-white text-base">Setting up a new laptop or building a custom desktop?</h4>
                 <p className="text-xs text-slate-400 mt-0.5">Let us handle the entire installation, fine-tuning, and security deployment for a perfectly optimized system.</p>
               </div>
               <button 
-                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                onClick={() => alert("Service request form implementation coming soon!")}
                 className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
                 Request Machine Setup
@@ -312,11 +302,9 @@ function App() {
               <p className="text-slate-400 text-sm mt-1">Eliminating repetitive digital grunt work for both busy individuals and growing teams.</p>
             </header>
 
-            {/* THE AUTOMATION PIPELINE */}
             <div className="space-y-6 mt-8">
               <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">What We Build For You</h2>
               
-              {/* Python Scripting */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Terminal size={20} />
@@ -329,7 +317,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Java Desktop Environments */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Cpu size={20} />
@@ -342,7 +329,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Workflow Integration */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Layers size={20} />
@@ -356,14 +342,14 @@ function App() {
               </div>
             </div>
 
-            {/* CALL TO ACTION */}
-            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
+            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h4 className="font-bold text-white text-base">Have a tedious digital task you want to automate?</h4>
                 <p className="text-xs text-slate-400 mt-0.5">Tell us what you're doing manually, and let us write a custom tool to do it for you instantly.</p>
               </div>
               <button 
-                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                onClick={() => alert("Service request form implementation coming soon!")}
                 className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
                 Request Custom Automation
@@ -392,11 +378,9 @@ function App() {
               <p className="text-slate-400 text-sm mt-1">Deep system troubleshooting, complete malware extraction, and airtight digital identity defense.</p>
             </header>
 
-            {/* THE SECURITY MATRIX */}
             <div className="space-y-6 mt-8">
               <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Crisis & Defense Services</h2>
               
-              {/* Deep Troubleshooting */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <ShieldAlert size={20} />
@@ -409,7 +393,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Malware Extraction */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <Sparkles size={20} />
@@ -422,7 +405,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Digital Identity Defense */}
               <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
                 <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
                   <ShieldCheck size={20} />
@@ -436,14 +418,14 @@ function App() {
               </div>
             </div>
 
-            {/* CALL TO ACTION */}
-            <div className="mt-8 p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
+            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h4 className="font-bold text-white text-base">Experiencing a security emergency or device crash?</h4>
                 <p className="text-xs text-slate-400 mt-0.5">Get immediate technical assistance to diagnose your device and secure your primary digital identities.</p>
               </div>
               <button 
-                onClick={() => alert("Service request form implementation coming soon at the end of development!")}
+                onClick={() => alert("Service request form implementation coming soon!")}
                 className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
                 Request Emergency Support
@@ -470,9 +452,11 @@ function App() {
             style={{ backgroundImage: "url('/welcome-bg.jpg')" }}
           ></div>
           
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"></div>
+          {/* ✅ FIXED: changed bg-[size:...] and [mask-image:...] to modern canonical structures */}
+          <div className="absolute inset-0 bg-linear-to-b bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] opacity-40"></div>
           
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-lime-500/15 rounded-full blur-[140px] pointer-events-none"></div>
+          {/* ✅ FIXED: changed w-[700px] and h-[700px] to standard w-175 and h-175 spacing tokens */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 bg-lime-500/15 rounded-full blur-[140px] pointer-events-none"></div>
 
           <div className="relative text-center max-w-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl shadow-lime-500/10 border-t-lime-500/30">
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-4 py-1.5 rounded-full border border-lime-800/50 mb-6">
@@ -560,7 +544,6 @@ function App() {
               </button>
             </div>
 
-            {/* Navigation Links */}
             <nav className="space-y-2">
               {navItems.map((item) => (
                 <button
@@ -583,7 +566,6 @@ function App() {
             </nav>
           </div>
 
-          {/* Sidebar Footer with Account Info and Exit Button */}
           <div className="border-t border-slate-800 pt-4 flex flex-col gap-3">
             <div className="flex items-center gap-3 overflow-hidden">
               <div className="w-10 h-10 rounded-full bg-lime-500 font-bold text-slate-950 flex items-center justify-center shrink-0">
@@ -597,7 +579,6 @@ function App() {
               )}
             </div>
 
-            {/* 🚪 Exit Portal Button */}
             <button
               onClick={() => {
                 setHasEntered(false);
