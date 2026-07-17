@@ -42,7 +42,7 @@ function App() {
           <div className="relative text-center max-w-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl shadow-lime-500/10 border-t-lime-500/30">
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-4 py-1.5 rounded-full border border-lime-800/50 mb-6">
               <Sparkles size={14} className="animate-pulse" />
-              Empowering Digital Infrastructure
+              Secure. Optimize. Automate.
             </div>
             
             <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none mb-6">
@@ -90,9 +90,12 @@ function App() {
 
       {/* 🖥️ 2. FIXED TOP NAVIGATION BAR */}
       <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-6">
-        <div className="flex items-center gap-3">
-          <span className="font-extrabold tracking-wider text-xl text-white">
+        <div className="flex flex-col justify-center">
+          <span className="font-extrabold tracking-wider text-xl text-white leading-none">
             OPTIMA<span className="text-lime-400"> IT SERVICES</span>
+          </span>
+          <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mt-1">
+            Secure. Optimize. Automate.
           </span>
         </div>
 
