@@ -20,7 +20,8 @@ import {
   ExternalLink,
   Code2,
   Calculator,
-  Check
+  Check,
+  Cloud
 } from 'lucide-react';
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
 
   const navItems = [
     { id: 'overview', icon: <Layers size={20} />, label: "Overview & Catalog" },
+    { id: 'cloud', icon: <Cloud size={20} />, label: "Cloud Migration" },
     { id: 'webdev', icon: <Globe size={20} />, label: "Web Apps & Portfolios" },
     { id: 'analytics', icon: <BarChart3 size={20} />, label: "Data & Analytics" },
     { id: 'network', icon: <Network size={20} />, label: "Network Architecture" },
@@ -75,7 +77,7 @@ function App() {
                   High-Performance <span className="text-transparent bg-clip-text bg-linear-to-r from-lime-400 via-emerald-300 to-cyan-400">IT Consulting & Software</span>
                 </h1>
                 <p className="text-slate-300 text-sm md:text-base mt-3 leading-relaxed">
-                  Explore our modular service offerings—from enterprise web applications and predictive analytics to hardened network infrastructure and task automation.
+                  Explore our modular service offerings—from cloud server migration and enterprise web applications to predictive analytics, network infrastructure, and task automation.
                 </p>
               </div>
             </header>
@@ -88,8 +90,39 @@ function App() {
                   <p className="text-xs text-slate-400">Structured solutions built on industry-standard architectures</p>
                 </div>
                 <span className="text-xs text-lime-400 font-mono bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
-                  7 Core Modules Available
+                  8 Core Modules Available
                 </span>
+              </div>
+
+              {/* ITEM 0: CLOUD MIGRATION (Text Left | Image Right) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl hover:border-lime-500/30 transition-all duration-300 group">
+                <div className="lg:col-span-7 flex flex-col justify-center lg:order-1 order-2">
+                  <div className="flex items-center gap-3 text-sky-400 mb-2">
+                    <Cloud size={22} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Cloud Infrastructure & AWS</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Cloud Migration & Onboarding for Small Businesses</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                    A lightweight, cost-effective service designed for single-branch small businesses moving from physical servers and local databases to secure AWS cloud infrastructure. Minimizes hardware maintenance and eliminates single points of failure with predictable monthly running costs.
+                  </p>
+                  <button 
+                    onClick={() => setActiveTab('cloud')}
+                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-950 bg-lime-400 hover:bg-lime-300 px-5 py-2.5 rounded-xl transition-all w-fit cursor-pointer shadow-lg shadow-lime-400/10"
+                  >
+                    View Cloud Migration Strategy <ArrowRight size={14} />
+                  </button>
+                </div>
+                <div className="lg:col-span-5 relative overflow-hidden rounded-2xl border border-slate-800 group-hover:border-lime-500/40 transition-colors lg:order-2 order-1">
+                  <img 
+                    src="https://images.unsplash.com/photo-1600267185393-e158a98703de?auto=format&fit=crop&w=800&q=80" 
+                    alt="Cloud Migration and Server Architecture" 
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                  <span className="absolute bottom-3 left-3 text-[10px] font-bold text-sky-400 uppercase tracking-widest bg-slate-950/80 px-2.5 py-1 rounded-lg border border-sky-500/30">
+                    AWS EC2 & RDS
+                  </span>
+                </div>
               </div>
 
               {/* ITEM 1: WEB DEV (Image Left | Text Right) */}
@@ -219,6 +252,21 @@ function App() {
           </div>
         );
 
+      case 'cloud':
+        return (
+          <div className="max-w-4xl mx-auto space-y-8">
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
+            <h1 className="text-3xl font-extrabold text-white">Cloud Migration & Onboarding</h1>
+            <p className="text-slate-400 text-sm">Details and migration workflow steps for small business physical-to-cloud server transfers will be populated here in the next stage.</p>
+          </div>
+        );
+
       case 'webdev':
         return (
           <div className="max-w-5xl mx-auto space-y-10">
@@ -328,7 +376,6 @@ function App() {
                 ))}
               </div>
 
-              {/* REMOVED SUBMIT BUTTON - DISPLAYING ESTIMATED TIME ONLY */}
               <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
                 <div>
                   <span className="text-xs text-slate-400">Estimated Turnaround Time:</span>
