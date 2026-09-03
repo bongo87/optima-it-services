@@ -12,113 +12,297 @@ import {
   Cpu,
   Sparkles,
   ArrowLeft,
-  LogOut
+  LogOut,
+  Globe,
+  BarChart3,
+  Database,
+  CheckCircle2,
+  ExternalLink
 } from 'lucide-react';
 
 function App() {
-  // State to manage whether the client has entered the portal
   const [hasEntered, setHasEntered] = useState(false);
-  // State to handle expanding/collapsing the left sidebar
   const [isExpanded, setIsExpanded] = useState(true);
-  // State to handle active navigation tab
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Navigation Items configurations
   const navItems = [
-    { id: 'overview', icon: <Layers size={20} />, label: "Overview" },
-    { id: 'network', icon: <Network size={20} />, label: "Network Design" },
-    { id: 'os', icon: <MonitorCog size={20} />, label: "OS Deployments" },
-    { id: 'software', icon: <Terminal size={20} />, label: "Custom Software" },
-    { id: 'diagnostics', icon: <ShieldAlert size={20} />, label: "Diagnostics" }
+    { id: 'overview', icon: <Layers size={20} />, label: "Overview & Catalog" },
+    { id: 'webdev', icon: <Globe size={20} />, label: "Web Apps & Portfolios" },
+    { id: 'analytics', icon: <BarChart3 size={20} />, label: "Data & Analytics" },
+    { id: 'network', icon: <Network size={20} />, label: "Network Architecture" },
+    { id: 'os', icon: <MonitorCog size={20} />, label: "OS & System Setup" },
+    { id: 'software', icon: <Terminal size={20} />, label: "Custom Automation" },
+    { id: 'diagnostics', icon: <ShieldAlert size={20} />, label: "Diagnostics & Security" }
   ];
 
-  // Helper function to render the correct main screen based on activeTab
   const renderMainContent = () => {
     switch (activeTab) {
       case 'overview':
         return (
-          <>
-            <header className="mb-10">
-              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
-                Control Panel Active
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">Welcome Back</h1>
-              <p className="text-slate-400 text-sm mt-1">Here is a snapshot of your customized IT consulting service catalog.</p>
+          <div className="space-y-12 max-w-6xl mx-auto">
+            {/* HERO / WELCOME BANNER */}
+            <header className="relative p-8 md:p-10 rounded-3xl bg-linear-to-r from-slate-900 via-slate-900/90 to-lime-950/30 border border-slate-800/80 overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-lime-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 max-w-2xl">
+                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-3.5 py-1 rounded-full border border-lime-800/40 mb-4">
+                  <Sparkles size={14} className="animate-pulse" /> Precision Technology Solutions
+                </span>
+                <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                  High-Performance <span className="text-transparent bg-clip-text bg-linear-to-r from-lime-400 via-emerald-300 to-cyan-400">IT Consulting & Software</span>
+                </h1>
+                <p className="text-slate-300 text-sm md:text-base mt-3 leading-relaxed">
+                  Explore our modular service offerings—from enterprise web applications and predictive analytics to hardened network infrastructure and task automation.
+                </p>
+              </div>
             </header>
 
-            {/* SERVICES CONTENT GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Card 1 */}
-              <div 
-                onClick={() => setActiveTab('network')} 
-                className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl hover:border-lime-500/30 transition-all cursor-pointer group"
-              >
-                <div className="text-lime-400 mb-4 bg-lime-950/30 w-12 h-12 rounded-xl flex items-center justify-center group-hover:bg-lime-500 group-hover:text-slate-950 transition-all">
-                  <Network size={24} />
+            {/* ZIGZAG SERVICES SECTION */}
+            <div className="space-y-12">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+                <div>
+                  <h2 className="text-xl font-extrabold text-white">Featured Consulting Catalog</h2>
+                  <p className="text-xs text-slate-400">Structured solutions built on industry-standard architectures</p>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Network Design & Cost Estimation</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Designing secure, simulated network infrastructures (VLANs, custom subnets). Providing hardware procurement quotes and complete network setup cost estimations for small businesses.
-                </p>
+                <span className="text-xs text-lime-400 font-mono bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
+                  7 Core Modules Available
+                </span>
               </div>
 
-              {/* Card 2 */}
-              <div 
-                onClick={() => setActiveTab('os')} 
-                className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl hover:border-lime-500/30 transition-all cursor-pointer group"
-              >
-                <div className="text-lime-400 mb-4 bg-lime-950/30 w-12 h-12 rounded-xl flex items-center justify-center group-hover:bg-lime-500 group-hover:text-slate-950 transition-all">
-                  <MonitorCog size={24} />
+              {/* ITEM 1: WEB DEV (Image Left | Text Right) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl hover:border-lime-500/30 transition-all duration-300 group">
+                <div className="lg:col-span-5 relative overflow-hidden rounded-2xl border border-slate-800 group-hover:border-lime-500/40 transition-colors">
+                  <img 
+                    src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" 
+                    alt="Web Development & Single Page Apps" 
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                  <span className="absolute bottom-3 left-3 text-[10px] font-bold text-cyan-400 uppercase tracking-widest bg-slate-950/80 px-2.5 py-1 rounded-lg border border-cyan-500/30">
+                    Modern Web Stack
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">OS Deployment & Software Suites</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Clean operating system installations (Windows/Linux), configuration of key business productivity software suites (Microsoft 365), drivers, and security settings.
-                </p>
+                <div className="lg:col-span-7 flex flex-col justify-center">
+                  <div className="flex items-center gap-3 text-cyan-400 mb-2">
+                    <Globe size={22} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Frontend & Web Systems</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Custom Web Application Development</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                    Engineering sleek, ultra-responsive single-page applications, interactive business landing pages, and interactive digital portfolios. Built using standard React, Tailwind CSS, and GitHub hosting integrations.
+                  </p>
+                  <button 
+                    onClick={() => setActiveTab('webdev')}
+                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-950 bg-lime-400 hover:bg-lime-300 px-5 py-2.5 rounded-xl transition-all w-fit cursor-pointer shadow-lg shadow-lime-400/10"
+                  >
+                    View Web Development Details <ArrowRight size={14} />
+                  </button>
+                </div>
               </div>
 
-              {/* Card 3 */}
-              <div 
-                onClick={() => setActiveTab('software')} 
-                className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl hover:border-lime-500/30 transition-all cursor-pointer group"
-              >
-                <div className="text-lime-400 mb-4 bg-lime-950/30 w-12 h-12 rounded-xl flex items-center justify-center group-hover:bg-lime-500 group-hover:text-slate-950 transition-all">
-                  <Terminal size={24} />
+              {/* ITEM 2: NETWORK DESIGN (Text Left | Image Right) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl hover:border-lime-500/30 transition-all duration-300 group">
+                <div className="lg:col-span-7 flex flex-col justify-center lg:order-1 order-2">
+                  <div className="flex items-center gap-3 text-lime-400 mb-2">
+                    <Network size={22} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Enterprise Infrastructure</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Network Topology Design & Costing</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                    Designing secure, simulated network topologies using Cisco Packet Tracer. We map VLAN isolation, custom subnets, multilayer switching, and generate complete hardware procurement budgets for small to medium enterprises.
+                  </p>
+                  <button 
+                    onClick={() => setActiveTab('network')}
+                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-950 bg-lime-400 hover:bg-lime-300 px-5 py-2.5 rounded-xl transition-all w-fit cursor-pointer shadow-lg shadow-lime-400/10"
+                  >
+                    View Infrastructure Process <ArrowRight size={14} />
+                  </button>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Custom Software & Task Automation</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Streamlining workflows using automated Python scripts for data manipulation, folder sorting, and building specialized utility tools using modern Java desktop environments.
-                </p>
+                <div className="lg:col-span-5 relative overflow-hidden rounded-2xl border border-slate-800 group-hover:border-lime-500/40 transition-colors lg:order-2 order-1">
+                  <img 
+                    src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80" 
+                    alt="Network Hardware and Servers" 
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                  <span className="absolute bottom-3 left-3 text-[10px] font-bold text-lime-400 uppercase tracking-widest bg-slate-950/80 px-2.5 py-1 rounded-lg border border-lime-500/30">
+                    Cisco Packet Tracer
+                  </span>
+                </div>
               </div>
 
-              {/* Card 4 */}
-              <div 
-                onClick={() => setActiveTab('diagnostics')} 
-                className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl hover:border-lime-500/30 transition-all cursor-pointer group"
-              >
-                <div className="text-lime-400 mb-4 bg-lime-950/30 w-12 h-12 rounded-xl flex items-center justify-center group-hover:bg-lime-500 group-hover:text-slate-950 transition-all">
-                  <ShieldAlert size={24} />
+              {/* ITEM 3: DATA ANALYTICS (Image Left | Text Right) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl hover:border-lime-500/30 transition-all duration-300 group">
+                <div className="lg:col-span-5 relative overflow-hidden rounded-2xl border border-slate-800 group-hover:border-lime-500/40 transition-colors">
+                  <img 
+                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" 
+                    alt="Data Analytics and Visualization" 
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                  <span className="absolute bottom-3 left-3 text-[10px] font-bold text-violet-400 uppercase tracking-widest bg-slate-950/80 px-2.5 py-1 rounded-lg border border-violet-500/30">
+                    Python & Power BI
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">System Diagnostics & Security Hardening</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Troubleshooting deep OS crashes, running system audits, executing malware extraction, and implementing mandatory 2FA account setup to defend critical digital identities.
-                </p>
+                <div className="lg:col-span-7 flex flex-col justify-center">
+                  <div className="flex items-center gap-3 text-violet-400 mb-2">
+                    <BarChart3 size={22} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Business Intelligence</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Data Analytics & Predictive Dashboards</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                    Transforming raw business datasets into interactive visual dashboards and predictive models. Utilizing Python (NumPy, Matplotlib, Scikit-learn), KMeans clustering algorithms, and Power BI reporting.
+                  </p>
+                  <button 
+                    onClick={() => setActiveTab('analytics')}
+                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-950 bg-lime-400 hover:bg-lime-300 px-5 py-2.5 rounded-xl transition-all w-fit cursor-pointer shadow-lg shadow-lime-400/10"
+                  >
+                    View Data Solutions <ArrowRight size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* ITEM 4: CUSTOM AUTOMATION (Text Left | Image Right) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl hover:border-lime-500/30 transition-all duration-300 group">
+                <div className="lg:col-span-7 flex flex-col justify-center lg:order-1 order-2">
+                  <div className="flex items-center gap-3 text-amber-400 mb-2">
+                    <Terminal size={22} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Workflow Engineering</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Custom Task Automation & Scripts</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                    Eliminating manual data entry and administrative clutter through tailored Python automation tools, directory monitors, automated file-sorting scripts, and Java utility desktop apps.
+                  </p>
+                  <button 
+                    onClick={() => setActiveTab('software')}
+                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-950 bg-lime-400 hover:bg-lime-300 px-5 py-2.5 rounded-xl transition-all w-fit cursor-pointer shadow-lg shadow-lime-400/10"
+                  >
+                    View Automation Catalog <ArrowRight size={14} />
+                  </button>
+                </div>
+                <div className="lg:col-span-5 relative overflow-hidden rounded-2xl border border-slate-800 group-hover:border-lime-500/40 transition-colors lg:order-2 order-1">
+                  <img 
+                    src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" 
+                    alt="Code Terminal and Automation Scripts" 
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                  <span className="absolute bottom-3 left-3 text-[10px] font-bold text-amber-400 uppercase tracking-widest bg-slate-950/80 px-2.5 py-1 rounded-lg border border-amber-500/30">
+                    Python & Java
+                  </span>
+                </div>
               </div>
             </div>
-          </>
+          </div>
         );
 
-      case 'network':
+      case 'webdev':
         return (
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto space-y-8">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
             
-            <header className="mb-8">
+            <header className="border-b border-slate-800/80 pb-6">
+              <span className="text-xs font-bold tracking-widest text-cyan-400 uppercase bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-800/30">
+                Digital Presence Suite
+              </span>
+              <h1 className="text-3xl font-extrabold text-white mt-3">Custom Web Applications & Digital Portfolios</h1>
+              <p className="text-slate-400 text-sm mt-1">High-performance web applications tailored for small businesses, professionals, and students.</p>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl">
+                <Globe className="text-cyan-400 mb-3" size={24} />
+                <h3 className="text-lg font-bold text-white mb-2">Single-Page Applications (SPAs)</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Fast, reactive web platforms developed with modern JavaScript frameworks, offering fluid navigation without repetitive page refreshes.
+                </p>
+              </div>
+
+              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl">
+                <Sparkles className="text-cyan-400 mb-3" size={24} />
+                <h3 className="text-lg font-bold text-white mb-2">Virtual CV & Portfolio Portals</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Interactive web portfolios designed to highlight professional skills, hosted directly on platforms like GitHub Pages for seamless sharing.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-cyan-950/20 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Need a custom website or interactive portfolio?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us build a responsive web interface tailored to your exact specifications.</p>
+              </div>
+              <button 
+                onClick={() => alert("Consultation form coming soon!")}
+                className="bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Web Project
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'analytics':
+        return (
+          <div className="max-w-4xl mx-auto space-y-8">
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
+            
+            <header className="border-b border-slate-800/80 pb-6">
+              <span className="text-xs font-bold tracking-widest text-violet-400 uppercase bg-violet-950/40 px-3 py-1 rounded-full border border-violet-800/30">
+                Business Intelligence Engine
+              </span>
+              <h1 className="text-3xl font-extrabold text-white mt-3">Data Analytics & Predictive Dashboards</h1>
+              <p className="text-slate-400 text-sm mt-1">Converting operational data into clear visual insights and automated clustering reports.</p>
+            </header>
+
+            <div className="space-y-4">
+              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
+                <BarChart3 className="text-violet-400 shrink-0" size={24} />
+                <div>
+                  <h3 className="text-base font-bold text-white">Power BI Dashboard Generation</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    Structuring relational data schemas and producing dynamic visual reports for operational tracking and executive summaries.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
+                <Database className="text-violet-400 shrink-0" size={24} />
+                <div>
+                  <h3 className="text-base font-bold text-white">Machine Learning & Data Clustering</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                    Applying Python statistical libraries (NumPy, Scikit-learn) and unsupervised algorithms (KMeans) to segment customer groups and recognize patterns.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'network':
+        return (
+          <div className="max-w-4xl mx-auto space-y-8">
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+              Back to Overview Menu
+            </button>
+            
+            <header className="border-b border-slate-800/80 pb-6">
               <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
                 Enterprise Consulting Phase
               </span>
@@ -126,312 +310,68 @@ function App() {
               <p className="text-slate-400 text-sm mt-1">Our end-to-end engineering pipeline for designing scalable, secure corporate environments.</p>
             </header>
 
-            <div className="space-y-6 mt-8">
-              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Engineering Process</h2>
-              
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Layers size={20} />
-                </div>
+            <div className="space-y-4">
+              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
+                <Layers className="text-lime-400 shrink-0" size={20} />
                 <div>
-                  <h3 className="text-base font-bold text-white">1. Site Assessment & Requirements Gathering</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    We analyze your facility's physical dimensions, floor plans, and total number of individual offices. By mapping your organizational layout alongside your projected business budget, we establish a baseline for your hardware density targets.
-                  </p>
+                  <h3 className="text-base font-bold text-white">1. Site Assessment & Requirements</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">Analyzing floor plans and physical constraints to calculate hardware density targets.</p>
                 </div>
               </div>
 
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Cpu size={20} />
-                </div>
+              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
+                <Cpu className="text-lime-400 shrink-0" size={20} />
                 <div>
-                  <h3 className="text-base font-bold text-white">2. Topology Simulation & Device Calculation</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    Using advanced modeling platforms like **Cisco Packet Tracer**, we construct a complete software replica of your future network topology. We calculate the exact distribution of core edge routers, managed PoE switches, multilayer switches, dual-band access points (APs), dedicated servers, and structured copper/fiber cabling runs.
-                  </p>
+                  <h3 className="text-base font-bold text-white">2. Cisco Packet Tracer Topology Simulation</h3>
+                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">Building complete virtual models of edge routers, managed switches, and VLAN distributions.</p>
                 </div>
               </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <ShieldCheck size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">3. Security Hardening & Isolation Layering</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    We engineer network security straight into the core blueprint. This includes partitioning departments using Virtual LANs (VLANs), configuring robust Access Control Lists (ACLs), and setting up encrypted corporate Wi-Fi authentication alongside secure guest portals.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Terminal size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">4. Comprehensive Hardware Procurement & Quotation Delivery</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    We return to you with a fully itemized, transparent quotation package. This contains accurate wholesale pricing for all recommended physical devices, structured cabling assessments, labor estimations for hardware installation, and a direct visual overview of your simulated network structure.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
-            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-white text-base">Ready to engineer your workspace network?</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Submit your building dimensions and deployment criteria through our assessment desk.</p>
-              </div>
-              <button 
-                onClick={() => alert("Service request form implementation coming soon!")}
-                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
-              >
-                Request Infrastructure Consultation
-                <ArrowRight size={14} />
-              </button>
             </div>
           </div>
         );
 
       case 'os':
         return (
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto space-y-8">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            
-            <header className="mb-8">
-              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
-                System Optimization Phase
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">OS Deployment & Software Suites</h1>
-              <p className="text-slate-400 text-sm mt-1">Standardizing machine environments with optimized operating systems and productivity baselines for individuals and teams.</p>
-            </header>
-
-            <div className="space-y-6 mt-8">
-              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Deployment Strategy</h2>
-              
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <MonitorCog size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">1. Clean OS Provisioning (Windows & Linux)</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    We eliminate annoying factory bloatware and background clutter by executing fresh, fully optimized operating system installations. Whether you need a lightning-fast enterprise Windows environment for your office or a specialized Linux distribution for development work, we configure the core system parameters for maximum stability.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Cpu size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">2. Driver Tuning & Precision Configuration</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    Mismatched, outdated, or generic drivers lead to sudden system freezing, lagging, and game crashes. We trace your specific hardware components (motherboards, chipsets, network cards, and graphics processing units) to inject exact, manufacturer-certified OEM drivers to unlock your machine's true potential.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Layers size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">3. Essential Software & Productivity Integration</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    We outfit your machine with a complete suite of required toolsets. From setting up licensed Microsoft 365 productivity suites for academic and corporate tasks, to configuring local email environments, media players, and structural tool dependencies so your machine is immediately ready for active use.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <ShieldCheck size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">4. Endpoint Security Baselines</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    No machine goes online unprotected. Every deployment receives customized local group security settings, proactive local firewalls, optimized system defender scripts, and active path automation safeguards to ensure you remain fully defended against browser threats and network vulnerabilities.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
-            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-white text-base">Setting up a new laptop or building a custom desktop?</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Let us handle the entire installation, fine-tuning, and security deployment for a perfectly optimized system.</p>
-              </div>
-              <button 
-                onClick={() => alert("Service request form implementation coming soon!")}
-                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
-              >
-                Request Machine Setup
-                <ArrowRight size={14} />
-              </button>
-            </div>
+            <h1 className="text-3xl font-extrabold text-white">OS Deployment & Software Suites</h1>
+            <p className="text-slate-400 text-sm">Clean installations (Windows/Linux), OEM driver tuning, and Microsoft 365 software integration.</p>
           </div>
         );
 
       case 'software':
         return (
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto space-y-8">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            
-            <header className="mb-8">
-              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
-                Workflow Automation Phase
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">Custom Software & Task Automation</h1>
-              <p className="text-slate-400 text-sm mt-1">Eliminating repetitive digital grunt work for both busy individuals and growing teams.</p>
-            </header>
-
-            <div className="space-y-6 mt-8">
-              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">What We Build For You</h2>
-              
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Terminal size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Automated Python Scripts</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    If you handle large datasets, massive amounts of files, or tedious data entry, we write custom Python automation matrices. From scraping web data to auto-sorting download folders or batch-renaming hundreds of client assets, we turn hours of manual clicking into a single-click process.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Cpu size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Specialized Standalone Applications</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    When a simple script isn't enough, we build robust, lightweight standalone desktop applications using streamlined Java environments. These utility tools feature clean interactive windows, solid internal data structures, and easy-to-use control panels tailored exactly to your unique workflow requirements.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Layers size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">File & System Management Macros</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    Perfect for students, researchers, or administrators who deal with digital chaos. We create background processes that safely monitor directories, auto-backup critical databases, clean up local cache drives, and keep your primary operating storage running fast and clutter-free.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
-            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-white text-base">Have a tedious digital task you want to automate?</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Tell us what you're doing manually, and let us write a custom tool to do it for you instantly.</p>
-              </div>
-              <button 
-                onClick={() => alert("Service request form implementation coming soon!")}
-                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
-              >
-                Request Custom Automation
-                <ArrowRight size={14} />
-              </button>
-            </div>
+            <h1 className="text-3xl font-extrabold text-white">Custom Software & Task Automation</h1>
+            <p className="text-slate-400 text-sm">Automated Python scripts for data manipulation, folder sorting, and specialized Java utility software.</p>
           </div>
         );
 
       case 'diagnostics':
         return (
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto space-y-8">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 mb-6 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            
-            <header className="mb-8">
-              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
-                Threat Defense & Repair Phase
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">System Diagnostics & Security Hardening</h1>
-              <p className="text-slate-400 text-sm mt-1">Deep system troubleshooting, complete malware extraction, and airtight digital identity defense.</p>
-            </header>
-
-            <div className="space-y-6 mt-8">
-              <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">Our Crisis & Defense Services</h2>
-              
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <ShieldAlert size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Crash Diagnostics & BSOD Resolutions</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    If your PC or laptop is constantly freezing, stuck in boot loops, or throwing Blue Screens of Death (BSOD), we perform deep kernel-level audits. We parse system event logs, isolate faulty hardware components, repair corrupted OS registries, and restore complete machine stability.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <Sparkles size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Malware, Spyware & Adware Extraction</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    If your device has been infected by malicious software, hidden miners, or tracking spyware, we execute thorough sanitization sweeps. We safely isolate threats, fully extract deep rootkits without compromising your personal files, and repair damage done to core system files.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex gap-4 items-start">
-                <div className="bg-lime-950/50 border border-lime-800/30 p-3 rounded-xl text-lime-400 shrink-0">
-                  <ShieldCheck size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Identity Hardening & Credential Protection</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    Don't wait until your LinkedIn, email, or banking profiles get hijacked. We help individuals recover from unauthorized access incidents, audit current credential leaks, and implement ironclad security baselines. This includes setting up secure password vaults and deploying mandatory, hardware-linked Two-Factor Authentication (2FA) protocols.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* ✅ FIXED: changed bg-gradient-to-r to bg-linear-to-r */}
-            <div className="mt-8 p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/20 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-white text-base">Experiencing a security emergency or device crash?</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Get immediate technical assistance to diagnose your device and secure your primary digital identities.</p>
-              </div>
-              <button 
-                onClick={() => alert("Service request form implementation coming soon!")}
-                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
-              >
-                Request Emergency Support
-                <ArrowRight size={14} />
-              </button>
-            </div>
+            <h1 className="text-3xl font-extrabold text-white">System Diagnostics & Security Hardening</h1>
+            <p className="text-slate-400 text-sm">BSOD error dump troubleshooting, malware extraction, password vault configuration, and 2FA deployment.</p>
           </div>
         );
 
@@ -443,72 +383,46 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-lime-500 selection:text-slate-950">
       
-      {/* 🚀 1. INSPIRING WELCOME PORTAL OVERLAY */}
+      {/* 🚀 WELCOME PORTAL OVERLAY */}
       {!hasEntered && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950 overflow-hidden">
-          
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-45 scale-100 transition-transform duration-1000"
-            style={{ backgroundImage: "url('/welcome-bg.jpg')" }}
+            className="absolute inset-0 bg-cover bg-center opacity-30"
+            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80')" }}
           ></div>
           
-          {/* ✅ FIXED: changed bg-[size:...] and [mask-image:...] to modern canonical structures */}
-          <div className="absolute inset-0 bg-linear-to-b bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] opacity-40"></div>
-          
-          {/* ✅ FIXED: changed w-[700px] and h-[700px] to standard w-175 and h-175 spacing tokens */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 bg-lime-500/15 rounded-full blur-[140px] pointer-events-none"></div>
 
-          <div className="relative text-center max-w-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl shadow-lime-500/10 border-t-lime-500/30">
+          <div className="relative text-center max-w-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-2xl p-8 md:p-12 rounded-3xl shadow-2xl border-t-lime-500/30">
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-4 py-1.5 rounded-full border border-lime-800/50 mb-6">
               <Sparkles size={14} className="animate-pulse" />
               Secure. Optimize. Automate.
             </div>
             
-            <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none mb-6">
-              OPTIMA <span className="text-lime-400">IT SERVICES</span>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-none mb-6">
+              OPTIMA <span className="text-lime-400">IT SOLUTIONS</span>
             </h1>
             
-            <p className="text-slate-300 leading-relaxed text-base md:text-lg mb-8 max-w-lg mx-auto">
-              We engineer secure network architectures, optimize workplace operating systems, and craft automation solutions designed to scale your enterprise.
+            <p className="text-slate-300 leading-relaxed text-sm md:text-base mb-8 max-w-lg mx-auto">
+              We design secure network architectures, build custom web applications, structure data analytics, and engineer workflow automation tools.
             </p>
 
-            <div className="grid grid-cols-3 gap-3 mb-10 text-xs text-slate-400 font-medium">
-              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800/60 backdrop-blur-sm">
-                <Cpu size={16} className="mx-auto mb-2 text-lime-400" />
-                Tailored Systems
-              </div>
-              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800/60 backdrop-blur-sm">
-                <Network size={16} className="mx-auto mb-2 text-lime-400" />
-                Robust Networks
-              </div>
-              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800/60 backdrop-blur-sm">
-                <ShieldCheck size={16} className="mx-auto mb-2 text-lime-400" />
-                Absolute Security
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center gap-3">
-              <button 
-                onClick={() => setHasEntered(true)}
-                className="inline-flex items-center gap-3 bg-lime-400 text-slate-950 font-bold px-8 py-4 rounded-xl hover:bg-lime-300 transition-all duration-300 cursor-pointer shadow-lg shadow-lime-400/10 hover:shadow-lime-400/20 group text-base"
-              >
-                Explore Services
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-              
-              <span className="text-xs italic text-slate-400 tracking-wide select-none animate-pulse">
-                Click to view our custom network designs, OS setups, and automation tools
-              </span>
-            </div>
+            <button 
+              onClick={() => setHasEntered(true)}
+              className="inline-flex items-center gap-3 bg-lime-400 text-slate-950 font-bold px-8 py-4 rounded-xl hover:bg-lime-300 transition-all duration-300 cursor-pointer shadow-lg shadow-lime-400/20 group text-base"
+            >
+              Explore Catalog & Control Panel
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
       )}
 
-      {/* 🖥️ 2. FIXED TOP NAVIGATION BAR */}
-      <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-6">
+      {/* 🖥️ TOP NAVIGATION BAR */}
+      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 h-16 flex items-center justify-between px-6">
         <div className="flex flex-col justify-center">
           <span className="font-extrabold tracking-wider text-xl text-white leading-none">
-            OPTIMA<span className="text-lime-400"> IT SERVICES</span>
+            OPTIMA<span className="text-lime-400"> IT SOLUTIONS</span>
           </span>
           <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mt-1">
             Secure. Optimize. Automate.
@@ -520,16 +434,16 @@ function App() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime-500"></span>
           </span>
-          <span className="text-xs font-semibold text-slate-300">Secure Live Session</span>
+          <span className="text-xs font-semibold text-slate-300">Live Portal</span>
         </div>
       </header>
 
       {/* MAIN CONTAINER */}
-      <div className="flex flex-1 h-[calc(100vh-4rem)]">
+      <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden">
         
-        {/* 🧭 3. COLLAPSIBLE SIDEBAR NAVIGATION */}
+        {/* 🧭 SIDEBAR NAVIGATION */}
         <aside 
-          className={`bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 transition-all duration-300 ease-in-out shrink-0 ${
+          className={`bg-slate-900 border-r border-slate-800/80 flex flex-col justify-between p-4 transition-all duration-300 ease-in-out shrink-0 ${
             isExpanded ? 'w-64' : 'w-20'
           }`}
         >
@@ -537,26 +451,25 @@ function App() {
             <div className={`flex items-center mb-6 ${isExpanded ? 'justify-end' : 'justify-center'}`}>
               <button 
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-lime-400 transition-colors duration-200 cursor-pointer"
-                title={isExpanded ? "Collapse Menu" : "Expand Menu"}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-lime-400 transition-colors cursor-pointer"
               >
                 {isExpanded ? <ChevronLeft size={20} /> : <Menu size={20} />}
               </button>
             </div>
 
-            <nav className="space-y-2">
+            <nav className="space-y-1.5">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-4 p-3 rounded-xl font-medium transition-all duration-200 cursor-pointer text-left ${
+                  className={`w-full flex items-center gap-3.5 p-3 rounded-xl font-medium transition-all duration-200 cursor-pointer text-left text-xs ${
                     activeTab === item.id 
-                      ? 'bg-lime-950/40 text-lime-400 border border-lime-500/20' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      ? 'bg-lime-950/50 text-lime-400 border border-lime-500/30' 
+                      : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
                   }`}
                 >
                   <div className="shrink-0">{item.icon}</div>
-                  <span className={`transition-opacity duration-300 whitespace-nowrap ${
+                  <span className={`transition-opacity duration-300 whitespace-nowrap font-semibold ${
                     isExpanded ? 'opacity-100' : 'opacity-0 hidden'
                   }`}>
                     {item.label}
@@ -566,15 +479,15 @@ function App() {
             </nav>
           </div>
 
-          <div className="border-t border-slate-800 pt-4 flex flex-col gap-3">
+          <div className="border-t border-slate-800/80 pt-4 flex flex-col gap-3">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-10 h-10 rounded-full bg-lime-500 font-bold text-slate-950 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-full bg-lime-400 font-bold text-slate-950 flex items-center justify-center shrink-0 text-xs">
                 RM
               </div>
               {isExpanded && (
                 <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-semibold text-white truncate">Rebone Motswana</span>
-                  <span className="text-xs text-lime-400 truncate">Administrator</span>
+                  <span className="text-xs font-semibold text-white truncate">Rebone Motswana</span>
+                  <span className="text-[10px] text-lime-400 truncate">Lead IT Consultant</span>
                 </div>
               )}
             </div>
@@ -584,19 +497,18 @@ function App() {
                 setHasEntered(false);
                 setActiveTab('overview');
               }}
-              className={`flex items-center gap-4 p-2.5 rounded-xl text-xs font-semibold text-red-400 hover:bg-red-950/30 hover:text-red-300 transition-all cursor-pointer text-left ${
-                isExpanded ? 'w-full px-3' : 'w-10 h-10 justify-center mx-auto'
+              className={`flex items-center gap-3.5 p-2 rounded-xl text-xs font-semibold text-red-400 hover:bg-red-950/30 transition-all cursor-pointer ${
+                isExpanded ? 'w-full px-3' : 'w-9 h-9 justify-center mx-auto'
               }`}
-              title="Exit Portal to Welcome Page"
             >
               <LogOut size={16} className="shrink-0" />
-              {isExpanded && <span>Exit Welcome Page</span>}
+              {isExpanded && <span>Exit Portal</span>}
             </button>
           </div>
         </aside>
 
-        {/* 🖥️ 4. MAIN CONTENT AREA */}
-        <main className="flex-1 p-8 md:p-12 overflow-y-auto bg-slate-950">
+        {/* 🖥️ MAIN CONTENT AREA */}
+        <main className="flex-1 p-6 md:p-10 overflow-y-auto bg-slate-950">
           {renderMainContent()}
         </main>
 
