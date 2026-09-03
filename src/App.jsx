@@ -17,13 +17,37 @@ import {
   BarChart3,
   Database,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  Code2,
+  Calculator,
+  Check
 } from 'lucide-react';
 
 function App() {
   const [hasEntered, setHasEntered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Interactive state for the Web Dev tab scope calculator
+  const [selectedFeatures, setSelectedFeatures] = useState({
+    portfolio: true,
+    customDomain: false,
+    contactForm: true,
+    analytics: false,
+  });
+
+  const toggleFeature = (feature) => {
+    setSelectedFeatures(prev => ({ ...prev, [feature]: !prev[feature] }));
+  };
+
+  const calculateEstimate = () => {
+    let days = 3;
+    if (selectedFeatures.portfolio) days += 2;
+    if (selectedFeatures.customDomain) days += 1;
+    if (selectedFeatures.contactForm) days += 1;
+    if (selectedFeatures.analytics) days += 1;
+    return days;
+  };
 
   const navItems = [
     { id: 'overview', icon: <Layers size={20} />, label: "Overview & Catalog" },
@@ -197,7 +221,7 @@ function App() {
 
       case 'webdev':
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
@@ -206,43 +230,125 @@ function App() {
               Back to Overview Menu
             </button>
             
-            <header className="border-b border-slate-800/80 pb-6">
-              <span className="text-xs font-bold tracking-widest text-cyan-400 uppercase bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-800/30">
-                Digital Presence Suite
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">Custom Web Applications & Digital Portfolios</h1>
-              <p className="text-slate-400 text-sm mt-1">High-performance web applications tailored for small businesses, professionals, and students.</p>
-            </header>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl">
-                <Globe className="text-cyan-400 mb-3" size={24} />
-                <h3 className="text-lg font-bold text-white mb-2">Single-Page Applications (SPAs)</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Fast, reactive web platforms developed with modern JavaScript frameworks, offering fluid navigation without repetitive page refreshes.
-                </p>
+            <header className="border-b border-slate-800/80 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <span className="text-xs font-bold tracking-widest text-cyan-400 uppercase bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-800/30">
+                  Digital Presence Suite
+                </span>
+                <h1 className="text-3xl font-extrabold text-white mt-3">Custom Web Applications & Portfolios</h1>
+                <p className="text-slate-400 text-sm mt-1">High-performance web applications tailored for small businesses, professionals, and academic portfolios.</p>
               </div>
 
-              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl">
-                <Sparkles className="text-cyan-400 mb-3" size={24} />
-                <h3 className="text-lg font-bold text-white mb-2">Virtual CV & Portfolio Portals</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Interactive web portfolios designed to highlight professional skills, hosted directly on platforms like GitHub Pages for seamless sharing.
+              <div className="flex gap-2">
+                <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/60 px-3 py-1.5 rounded-xl border border-cyan-800/40 flex items-center gap-1.5">
+                  <Code2 size={14} /> React + Tailwind CSS
+                </span>
+              </div>
+            </header>
+
+            {/* CORE OFFERING CARDS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-slate-900/50 border border-slate-800/80 hover:border-cyan-500/30 p-6 rounded-2xl transition-all duration-300">
+                <div className="p-3 bg-cyan-950/60 rounded-xl w-fit text-cyan-400 border border-cyan-800/40 mb-4">
+                  <Globe size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Single-Page Applications (SPAs)</h3>
+                <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                  Fast, reactive web platforms developed with modern JavaScript frameworks, offering fluid navigation without repetitive page refreshes.
                 </p>
+                <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={14} className="text-cyan-400" /> Dynamic state handling & client-side routing
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={14} className="text-cyan-400" /> Fully responsive across desktop, tablet, & mobile
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-slate-900/50 border border-slate-800/80 hover:border-cyan-500/30 p-6 rounded-2xl transition-all duration-300">
+                <div className="p-3 bg-cyan-950/60 rounded-xl w-fit text-cyan-400 border border-cyan-800/40 mb-4">
+                  <Sparkles size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Virtual CV & Portfolio Portals</h3>
+                <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                  Interactive web portfolios designed to showcase technical skills, coursework projects, and professional history—hosted directly on GitHub Pages.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={14} className="text-cyan-400" /> GitHub Pages hosting & custom domain mapping
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={14} className="text-cyan-400" /> Integrated downloadable resume & project showcases
+                  </li>
+                </ul>
               </div>
             </div>
 
+            {/* INTERACTIVE SCOPE & ESTIMATOR CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-lime-950/60 text-lime-400 rounded-xl border border-lime-800/40">
+                  <Calculator size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Interactive Web Project Estimator</h3>
+                  <p className="text-xs text-slate-400">Select components to estimate turn-around time and scope</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { id: 'portfolio', label: 'Virtual CV / Single-Page Portfolio', days: '2 Days' },
+                  { id: 'contactForm', label: 'Interactive Contact Form & Map Pinning', days: '1 Day' },
+                  { id: 'customDomain', label: 'Custom Domain & GitHub Pages Setup', days: '1 Day' },
+                  { id: 'analytics', label: 'Embedded Analytics & Visitor Metrics', days: '1 Day' }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleFeature(item.id)}
+                    className={`flex items-center justify-between p-4 rounded-xl border transition-all text-left cursor-pointer ${
+                      selectedFeatures[item.id]
+                        ? 'bg-cyan-950/40 border-cyan-500/50 text-white'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center border text-xs ${
+                        selectedFeatures[item.id] ? 'bg-cyan-400 border-cyan-400 text-slate-950 font-bold' : 'border-slate-700'
+                      }`}>
+                        {selectedFeatures[item.id] && <Check size={12} />}
+                      </div>
+                      <span className="text-xs font-semibold">{item.label}</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800/40">
+                      +{item.days}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* REMOVED SUBMIT BUTTON - DISPLAYING ESTIMATED TIME ONLY */}
+              <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Turnaround Time:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{calculateEstimate()} Business Days</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
             <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-cyan-950/20 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <h4 className="font-bold text-white text-base">Need a custom website or interactive portfolio?</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Let us build a responsive web interface tailored to your exact specifications.</p>
+                <h4 className="font-bold text-white text-base">Ready to build your web presence?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us build a clean, responsive web application tailored to your project goals.</p>
               </div>
               <button 
-                onClick={() => alert("Consultation form coming soon!")}
+                onClick={() => alert("Consultation form opened!")}
                 className="bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
-                Request Web Project
-                <ArrowRight size={14} />
+                Request Consultation
+                <ExternalLink size={14} />
               </button>
             </div>
           </div>
@@ -383,7 +489,7 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-lime-500 selection:text-slate-950">
       
-      {/* 🚀 WELCOME PORTAL OVERLAY */}
+      {/* WELCOME PORTAL OVERLAY */}
       {!hasEntered && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950 overflow-hidden">
           <div 
@@ -418,7 +524,7 @@ function App() {
         </div>
       )}
 
-      {/* 🖥️ TOP NAVIGATION BAR */}
+      {/* TOP NAVIGATION BAR */}
       <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 h-16 flex items-center justify-between px-6">
         <div className="flex flex-col justify-center">
           <span className="font-extrabold tracking-wider text-xl text-white leading-none">
@@ -441,7 +547,7 @@ function App() {
       {/* MAIN CONTAINER */}
       <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden">
         
-        {/* 🧭 SIDEBAR NAVIGATION */}
+        {/* SIDEBAR NAVIGATION */}
         <aside 
           className={`bg-slate-900 border-r border-slate-800/80 flex flex-col justify-between p-4 transition-all duration-300 ease-in-out shrink-0 ${
             isExpanded ? 'w-64' : 'w-20'
@@ -507,7 +613,7 @@ function App() {
           </div>
         </aside>
 
-        {/* 🖥️ MAIN CONTENT AREA */}
+        {/* MAIN CONTENT AREA */}
         <main className="flex-1 p-6 md:p-10 overflow-y-auto bg-slate-950">
           {renderMainContent()}
         </main>
