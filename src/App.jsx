@@ -21,7 +21,14 @@ import {
   Code2,
   Calculator,
   Check,
-  Cloud
+  Cloud,
+  Server,
+  HardDrive,
+  RefreshCw,
+  Zap,
+  Search,
+  Layout,
+  Rocket
 } from 'lucide-react';
 
 function App() {
@@ -37,17 +44,41 @@ function App() {
     analytics: false,
   });
 
+  // Interactive state for the Cloud Migration estimator
+  const [cloudConfig, setCloudConfig] = useState({
+    serverCount: 1,
+    databaseGb: 50,
+    backupStrategy: 'daily', // 'daily' | 'realtime'
+    supportLevel: 'business' // 'basic' | 'business'
+  });
+
   const toggleFeature = (feature) => {
     setSelectedFeatures(prev => ({ ...prev, [feature]: !prev[feature] }));
   };
 
   const calculateEstimate = () => {
-    let days = 3;
-    if (selectedFeatures.portfolio) days += 2;
+    let days = 7; // Set realistic base minimum working days
+    if (selectedFeatures.portfolio) days += 1;
     if (selectedFeatures.customDomain) days += 1;
     if (selectedFeatures.contactForm) days += 1;
     if (selectedFeatures.analytics) days += 1;
     return days;
+  };
+
+  // Cloud Migration Cost & Timeline Calculator Logic
+  const calculateCloudEstimate = () => {
+    const baseMigrationDays = 7 + (cloudConfig.serverCount - 1); // Realistic minimum 7 working days
+    const dbMigrationDays = Math.ceil(cloudConfig.databaseGb / 100);
+    const totalDays = baseMigrationDays + dbMigrationDays + (cloudConfig.backupStrategy === 'realtime' ? 1 : 0);
+
+    // Approximate monthly AWS infra estimate (USD)
+    const serverCost = cloudConfig.serverCount * 45; // e.g., t3.medium EC2 instances
+    const storageCost = (cloudConfig.databaseGb * 0.11); // RDS / EBS storage
+    const backupCost = cloudConfig.backupStrategy === 'realtime' ? 30 : 10;
+    const supportCost = cloudConfig.supportLevel === 'business' ? 100 : 20;
+    const monthlyTotal = Math.round(serverCost + storageCost + backupCost + supportCost);
+
+    return { totalDays, monthlyTotal };
   };
 
   const navItems = [
@@ -253,8 +284,9 @@ function App() {
         );
 
       case 'cloud':
+        const cloudEst = calculateCloudEstimate();
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
@@ -262,8 +294,311 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">Cloud Migration & Onboarding</h1>
-            <p className="text-slate-400 text-sm">Details and migration workflow steps for small business physical-to-cloud server transfers will be populated here in the next stage.</p>
+            
+            <header className="border-b border-slate-800/80 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <span className="text-xs font-bold tracking-widest text-sky-400 uppercase bg-sky-950/40 px-3 py-1 rounded-full border border-sky-800/30">
+                  AWS Cloud Architecture
+                </span>
+                <h1 className="text-3xl font-extrabold text-white mt-3">Cloud Migration & Infrastructure</h1>
+                <p className="text-slate-400 text-sm mt-1">Seamless transition from on-premise physical servers to managed AWS cloud environments.</p>
+              </div>
+
+              <span className="text-[11px] font-mono text-sky-400 bg-sky-950/60 px-3 py-1.5 rounded-xl border border-sky-800/40 flex items-center gap-1.5 w-fit">
+                <Cloud size={14} /> AWS EC2 & RDS Managed
+              </span>
+            </header>
+
+            {/* WHAT WE OFFER IN CLOUD MIGRATION */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-sky-400" /> What Exactly We Offer
+                </h2>
+                <span className="text-xs text-sky-400 font-mono">Managed Solutions</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-slate-900/50 border border-slate-800/80 p-5 rounded-2xl">
+                  <div className="p-2.5 bg-sky-950/60 rounded-xl w-fit text-sky-400 border border-sky-800/40 mb-3">
+                    <Server size={20} />
+                  </div>
+                  <h3 className="font-bold text-white text-sm mb-2">On-Premise to AWS Virtual Server Migration</h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">
+                    Migration of local physical or virtual servers to secure, auto-scaling AWS EC2 virtual machines with customized OS configurations.
+                  </p>
+                </div>
+
+                <div className="bg-slate-900/50 border border-slate-800/80 p-5 rounded-2xl">
+                  <div className="p-2.5 bg-sky-950/60 rounded-xl w-fit text-sky-400 border border-sky-800/40 mb-3">
+                    <Database size={20} />
+                  </div>
+                  <h3 className="font-bold text-white text-sm mb-2">Database & File Cloud Synchronization</h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">
+                    Transfer and conversion of legacy relational databases into managed AWS RDS instances and secure S3 bucket storage.
+                  </p>
+                </div>
+
+                <div className="bg-slate-900/50 border border-slate-800/80 p-5 rounded-2xl">
+                  <div className="p-2.5 bg-sky-950/60 rounded-xl w-fit text-sky-400 border border-sky-800/40 mb-3">
+                    <ShieldAlert size={20} />
+                  </div>
+                  <h3 className="font-bold text-white text-sm mb-2">Security, Backup & Disaster Recovery</h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">
+                    Setup of custom IAM permissions, VPC firewall rules, daily automated backups, and 24/7 infrastructure monitoring.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ENHANCED VISUAL MIGRATION STEPS SECTION WITH PICTURES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-sky-400" /> Our 4-Step Migration Framework
+                </h2>
+                <span className="text-xs text-sky-400 font-mono">End-to-End AWS Onboarding</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STEP 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-sky-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" 
+                      alt="Assessment & Audit" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-sky-500/90 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-sky-400 transition-colors">
+                        Assessment & Audit
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Inventory existing local servers, databases, and bandwidth usage to select optimal AWS instance sizes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-sky-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" 
+                      alt="Architecture & Provisioning" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-sky-500/90 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-sky-400 transition-colors">
+                        Architecture & VPC
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Configure secure VPCs, IAM user permissions, firewall rules, and provision virtual EC2 or RDS nodes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-sky-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80" 
+                      alt="Data Transfer & Testing" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-sky-500/90 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-sky-400 transition-colors">
+                        Data Sync & Sandbox
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Sync local databases and file stores into cloud storage, run integrity tests, and conduct trial runs.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-sky-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" 
+                      alt="Cutover & Optimization" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-sky-500/90 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-sky-400 transition-colors">
+                        Live Cutover & Backup
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Execute final live cutover off-peak, map domains/IPs, activate automated backups, and monitor metrics.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE CLOUD ESTIMATOR CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-sky-950/60 text-sky-400 rounded-xl border border-sky-800/40">
+                  <Calculator size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">AWS Cloud Migration Estimator</h3>
+                  <p className="text-xs text-slate-400">Tailor requirements to estimate deployment timeline & estimated AWS running costs</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* SERVERS */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Server size={14} className="text-sky-400" /> Virtual / Physical Servers to Migrate
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="10" 
+                      value={cloudConfig.serverCount}
+                      onChange={(e) => setCloudConfig(prev => ({ ...prev, serverCount: parseInt(e.target.value) }))}
+                      className="w-full accent-sky-400 cursor-pointer"
+                    />
+                    <span className="text-sm font-bold text-sky-400 font-mono w-12 text-right">{cloudConfig.serverCount} Server{cloudConfig.serverCount > 1 ? 's' : ''}</span>
+                  </div>
+                </div>
+
+                {/* DATABASE SIZE */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <HardDrive size={14} className="text-sky-400" /> Total Database / File Volume (GB)
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="10" 
+                      max="500" 
+                      step="10"
+                      value={cloudConfig.databaseGb}
+                      onChange={(e) => setCloudConfig(prev => ({ ...prev, databaseGb: parseInt(e.target.value) }))}
+                      className="w-full accent-sky-400 cursor-pointer"
+                    />
+                    <span className="text-sm font-bold text-sky-400 font-mono w-16 text-right">{cloudConfig.databaseGb} GB</span>
+                  </div>
+                </div>
+
+                {/* BACKUP STRATEGY */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <RefreshCw size={14} className="text-sky-400" /> Automated Backup Frequency
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setCloudConfig(prev => ({ ...prev, backupStrategy: 'daily' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        cloudConfig.backupStrategy === 'daily'
+                          ? 'bg-sky-950/60 border-sky-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Daily Snapshot
+                    </button>
+                    <button
+                      onClick={() => setCloudConfig(prev => ({ ...prev, backupStrategy: 'realtime' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        cloudConfig.backupStrategy === 'realtime'
+                          ? 'bg-sky-950/60 border-sky-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Real-time Replication
+                    </button>
+                  </div>
+                </div>
+
+                {/* SUPPORT LEVEL */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-sky-400" /> Maintenance & Support Tier
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setCloudConfig(prev => ({ ...prev, supportLevel: 'basic' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        cloudConfig.supportLevel === 'basic'
+                          ? 'bg-sky-950/60 border-sky-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Standard Monitoring
+                    </button>
+                    <button
+                      onClick={() => setCloudConfig(prev => ({ ...prev, supportLevel: 'business' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        cloudConfig.supportLevel === 'business'
+                          ? 'bg-sky-950/60 border-sky-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      24/7 Managed Support
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* ESTIMATION SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Migration Timeline:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{cloudEst.totalDays} Business Days</p>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400">Est. AWS Monthly Infra Cost:</span>
+                  <p className="text-2xl font-extrabold text-sky-400 font-mono">~${cloudEst.monthlyTotal} / month</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-sky-950/20 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Ready to move your servers to the cloud?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Schedule an infrastructure assessment with our team to map out your migration strategy.</p>
+              </div>
+              <button 
+                onClick={() => alert("Cloud consultation request initiated!")}
+                className="bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Schedule Migration Audit
+                <ExternalLink size={14} />
+              </button>
+            </div>
           </div>
         );
 
@@ -333,6 +668,118 @@ function App() {
               </div>
             </div>
 
+            {/* VISUAL WEB DEVELOPMENT STEPS WITH PICTURES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-cyan-400" /> Our Development Lifecycle
+                </h2>
+                <span className="text-xs text-cyan-400 font-mono">Agile Delivery Methodology</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STEP 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80" 
+                      alt="Discovery & Scope Analysis" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-cyan-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                        <Search size={14} className="text-cyan-400" /> Discovery & Scope
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Gather client requirements, define app features, curate asset libraries, and draft initial content outlines.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=600&q=80" 
+                      alt="UI/UX Prototyping & Layout" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-cyan-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                        <Layout size={14} className="text-cyan-400" /> UI/UX Wireframing
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Design clean dark-mode components, pick accessible color schemes, and structure responsive navigation layouts.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80" 
+                      alt="Frontend Engineering & Integration" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-cyan-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                        <Code2 size={14} className="text-cyan-400" /> Development & React
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Construct functional React components, implement Tailwind CSS utilities, and configure interactive state logic.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" 
+                      alt="Deployment & GitHub Pages Hosting" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-cyan-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                        <Rocket size={14} className="text-cyan-400" /> QA & Deployment
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Execute cross-browser checks, optimize page performance, connect custom domain names, and deploy live on GitHub Pages.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* INTERACTIVE SCOPE & ESTIMATOR CALCULATOR */}
             <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
               <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
@@ -347,7 +794,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { id: 'portfolio', label: 'Virtual CV / Single-Page Portfolio', days: '2 Days' },
+                  { id: 'portfolio', label: 'Virtual CV / Single-Page Portfolio', days: '1 Day' },
                   { id: 'contactForm', label: 'Interactive Contact Form & Map Pinning', days: '1 Day' },
                   { id: 'customDomain', label: 'Custom Domain & GitHub Pages Setup', days: '1 Day' },
                   { id: 'analytics', label: 'Embedded Analytics & Visitor Metrics', days: '1 Day' }
