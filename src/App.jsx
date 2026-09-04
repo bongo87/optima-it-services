@@ -67,6 +67,20 @@ function App() {
   const [hasEntered, setHasEntered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [isEntering, setIsEntering] = useState(false);
+
+  const handleExploreSolutions = () => {
+    if (isEntering) return;
+    setIsEntering(true);
+
+    // Let the portal complete its spiral -> blackhole -> logo power-on sequence
+    // before revealing the existing application.
+    window.setTimeout(() => {
+      setActiveTab('overview');
+      setHasEntered(true);
+      setIsEntering(false);
+    }, 3200);
+  };
 
   // Interactive state for the Web Dev tab scope calculator
   const [selectedFeatures, setSelectedFeatures] = useState({
@@ -3253,6 +3267,161 @@ function App() {
             clip-path: circle(49% at 50% 50%);
           }
 
+          /* Portal exit: the complete welcome composition spirals into the center. */
+          @keyframes optima-portal-collapse {
+            0% {
+              transform: perspective(1200px) rotate(0deg) scale(1);
+              opacity: 1;
+              filter: blur(0);
+            }
+            48% {
+              transform: perspective(1200px) rotate(165deg) scale(.64);
+              opacity: .98;
+              filter: blur(.2px);
+            }
+            78% {
+              transform: perspective(1200px) rotate(520deg) scale(.12);
+              opacity: .72;
+              filter: blur(2px);
+            }
+            100% {
+              transform: perspective(1200px) rotate(760deg) scale(.015);
+              opacity: 0;
+              filter: blur(8px);
+            }
+          }
+
+          @keyframes optima-blackhole-open {
+            0% { transform: translate(-50%, -50%) scale(.05); opacity: 0; }
+            25% { transform: translate(-50%, -50%) scale(.42); opacity: .55; }
+            55% { transform: translate(-50%, -50%) scale(1); opacity: .98; }
+            100% { transform: translate(-50%, -50%) scale(1.16); opacity: 1; }
+          }
+
+          @keyframes optima-blackhole-ring {
+            from { transform: translate(-50%, -50%) rotate(0deg) scale(.7); }
+            to { transform: translate(-50%, -50%) rotate(360deg) scale(1.08); }
+          }
+
+          @keyframes optima-power-logo {
+            0% {
+              transform: translate(-50%, -50%) scale(.015);
+              opacity: 0;
+              filter: blur(18px) brightness(2.2);
+            }
+            22% {
+              opacity: 1;
+              filter: blur(7px) brightness(2);
+            }
+            58% {
+              transform: translate(-50%, -50%) scale(.72);
+              opacity: 1;
+              filter: blur(1px) brightness(1.4);
+            }
+            82% {
+              transform: translate(-50%, -50%) scale(1.18);
+              opacity: 1;
+              filter: blur(0) brightness(1.1);
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 1;
+              filter: blur(0) brightness(1);
+            }
+          }
+
+          @keyframes optima-power-flash {
+            0%, 42% { opacity: 0; transform: translate(-50%, -50%) scale(.1); }
+            55% { opacity: .95; transform: translate(-50%, -50%) scale(.5); }
+            72% { opacity: .18; transform: translate(-50%, -50%) scale(1.25); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+          }
+
+          .optima-welcome-content.is-entering {
+            animation: optima-portal-collapse 2.15s cubic-bezier(.55,.02,.88,.4) forwards;
+            transform-origin: 50% 50%;
+            will-change: transform, opacity, filter;
+          }
+
+          .optima-transition-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0;
+          }
+
+          .optima-transition-layer.is-entering {
+            opacity: 1;
+          }
+
+          .optima-blackhole {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: min(26rem, 54vw);
+            height: min(26rem, 54vw);
+            border-radius: 9999px;
+            background:
+              radial-gradient(circle, #000 0 22%, #020402 38%, rgba(4,12,3,.94) 55%, transparent 72%),
+              conic-gradient(from 0deg, transparent 0deg, rgba(190,242,100,.7) 45deg, transparent 88deg, rgba(132,204,22,.6) 160deg, transparent 220deg, rgba(217,249,157,.55) 300deg, transparent 360deg);
+            box-shadow:
+              0 0 45px rgba(132,204,22,.45),
+              0 0 120px rgba(163,230,53,.22),
+              inset 0 0 35px rgba(0,0,0,.95);
+            animation: optima-blackhole-open 1.35s cubic-bezier(.2,.7,.2,1) forwards;
+          }
+
+          .optima-blackhole::before,
+          .optima-blackhole::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            border-radius: 9999px;
+            border: 1px solid rgba(190,242,100,.55);
+            box-shadow: 0 0 25px rgba(163,230,53,.35);
+          }
+
+          .optima-blackhole::before {
+            width: 145%;
+            height: 145%;
+            animation: optima-blackhole-ring 2.2s linear infinite;
+          }
+
+          .optima-blackhole::after {
+            width: 190%;
+            height: 190%;
+            border-color: rgba(132,204,22,.26);
+            animation: optima-blackhole-ring 3.1s linear infinite reverse;
+          }
+
+          .optima-power-flash {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: min(20rem, 44vw);
+            height: min(20rem, 44vw);
+            border-radius: 9999px;
+            background: radial-gradient(circle, rgba(236,252,203,.95) 0, rgba(190,242,100,.55) 14%, rgba(163,230,53,.18) 38%, transparent 70%);
+            animation: optima-power-flash 1.9s ease-out 1.1s forwards;
+          }
+
+          .optima-power-logo {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: min(15rem, 34vw);
+            height: min(15rem, 34vw);
+            object-fit: contain;
+            border-radius: 9999px;
+            -webkit-mask-image: radial-gradient(circle at center, #000 0 67%, rgba(0,0,0,.98) 76%, rgba(0,0,0,.62) 89%, transparent 100%);
+            mask-image: radial-gradient(circle at center, #000 0 67%, rgba(0,0,0,.98) 76%, rgba(0,0,0,.62) 89%, transparent 100%);
+            filter: drop-shadow(0 0 32px rgba(190,242,100,.85));
+            animation: optima-power-logo 1.85s cubic-bezier(.2,.8,.2,1) 1.05s forwards;
+          }
+
           @media (prefers-reduced-motion: reduce) {
             .optima-orbit,
             .optima-orbit-1,
@@ -3312,7 +3481,7 @@ function App() {
 
         {/* Welcome panel — deliberately translucent so the orbitals remain visible through it */}
         <main
-          className="relative z-10 w-full max-w-5xl overflow-hidden rounded-[2rem] border border-lime-300/20 bg-black/[0.18] p-7 text-center shadow-[0_30px_100px_rgba(0,0,0,.42)] backdrop-blur-[3px] sm:p-10 md:p-14"
+          className={`optima-welcome-content relative z-10 w-full max-w-5xl overflow-hidden rounded-[2rem] border border-lime-300/20 bg-black/[0.18] p-7 text-center shadow-[0_30px_100px_rgba(0,0,0,.42)] backdrop-blur-[3px] sm:p-10 md:p-14 ${isEntering ? 'is-entering' : ''}`}
           style={{
             boxShadow:
               '0 30px 100px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06), 0 0 90px rgba(132,204,22,.10)'
@@ -3393,7 +3562,7 @@ function App() {
 
           <div className="relative mt-9 flex flex-col items-center gap-4">
             <button
-              onClick={() => setHasEntered(true)}
+              onClick={handleExploreSolutions}
               className="group inline-flex min-w-[220px] items-center justify-center gap-3 rounded-2xl bg-lime-400 px-7 py-4 text-sm font-extrabold tracking-tight text-[#071006] shadow-[0_14px_45px_rgba(163,230,53,.22)] outline-none transition-all duration-300 hover:-translate-y-1 hover:bg-lime-300 hover:shadow-[0_18px_60px_rgba(163,230,53,.34)] focus-visible:ring-2 focus-visible:ring-lime-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050805]"
             >
               Explore Our Solutions
@@ -3405,6 +3574,14 @@ function App() {
             </p>
           </div>
         </main>
+
+        {/* Portal transition overlay: everything collapses into a central blackhole,
+            then the circular Optima IT Solutions logo powers on from its center. */}
+        <div className={`optima-transition-layer ${isEntering ? 'is-entering' : ''}`} aria-hidden="true">
+          <div className="optima-blackhole" />
+          <div className="optima-power-flash" />
+          <img src={LOGO_SRC} alt="" className="optima-power-logo optima-logo-fade" />
+        </div>
       </div>
     );
   }
@@ -3422,12 +3599,17 @@ function App() {
           {/* BRAND LOGO */}
           <div className="flex items-center justify-between">
             <div className={`flex items-center gap-3 overflow-hidden transition-all ${isExpanded ? 'opacity-100' : 'opacity-0 w-0'}`}>
-              <div className="p-1 bg-black border border-lime-500/30 rounded-xl shrink-0">
-                <img src={LOGO_SRC} alt="Optima IT Solutions logo" className="w-8 h-8 object-contain" />
+              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-lime-400/30 bg-black/80 shadow-[0_0_18px_rgba(163,230,53,.16)]">
+                <img src={LOGO_SRC} alt="Optima IT Solutions logo" className="optima-logo-fade h-full w-full object-contain" />
               </div>
-              <span className="font-extrabold text-white text-base tracking-tight whitespace-nowrap">
-                Optima <span className="text-lime-400">IT</span>
-              </span>
+              <div className="min-w-0 leading-none whitespace-nowrap">
+                <div className="font-extrabold text-white text-sm tracking-tight">
+                  Optima <span className="text-lime-400">IT Solutions</span>
+                </div>
+                <div className="mt-1.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-lime-300/70">
+                  Secure · Optimize · Automate
+                </div>
+              </div>
             </div>
             <button 
               onClick={() => setIsExpanded(!isExpanded)}
@@ -3471,10 +3653,13 @@ function App() {
       {/* MOBILE HEADER */}
       <div className="md:hidden bg-black border-b border-lime-500/20 p-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <div className="p-1 bg-black border border-lime-500/30 rounded-lg">
-            <img src={LOGO_SRC} alt="Optima IT Solutions logo" className="w-6 h-6 object-contain" />
+          <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-lime-400/30 bg-black/80">
+            <img src={LOGO_SRC} alt="Optima IT Solutions logo" className="optima-logo-fade h-full w-full object-contain" />
           </div>
-          <span className="font-bold text-white text-sm">Optima IT Solutions</span>
+          <div className="leading-none">
+            <div className="font-bold text-white text-sm">Optima IT Solutions</div>
+            <div className="mt-1 text-[7px] font-semibold uppercase tracking-[0.18em] text-lime-300/65">Secure · Optimize · Automate</div>
+          </div>
         </div>
         <select 
           value={activeTab} 
