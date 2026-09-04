@@ -43,7 +43,15 @@ import {
   Settings,
   HardDriveDownload,
   Sliders,
-  CheckSquare
+  CheckSquare,
+  Lock,
+  Key,
+  FileCode,
+  Bot,
+  Play,
+  Activity,
+  AlertTriangle,
+  FolderGit2
 } from 'lucide-react';
 
 function App() {
@@ -89,6 +97,22 @@ function App() {
     osType: 'dual', // 'windows' | 'linux' | 'dual'
     suite: 'enterprise', // 'basic' | 'enterprise'
     securityHardening: true
+  });
+
+  // Interactive state for Custom Automation Estimator
+  const [automationConfig, setAutomationConfig] = useState({
+    scriptLanguage: 'python', // 'python' | 'java' | 'bash'
+    taskComplexity: 'medium', // 'simple' | 'medium' | 'complex'
+    scheduleType: 'cron', // 'manual' | 'cron' | 'event'
+    guiRequired: false
+  });
+
+  // Interactive state for Diagnostics & Security Estimator
+  const [securityConfig, setSecurityConfig] = useState({
+    deviceCount: 10,
+    scanDepth: 'full', // 'quick' | 'full' | 'deep'
+    vulnerabilityAudit: true,
+    osHardening: true
   });
 
   const toggleFeature = (feature) => {
@@ -159,6 +183,30 @@ function App() {
     const softwareBudgetEstimate = osConfig.workstations * (osConfig.suite === 'enterprise' ? 150 : 50);
 
     return { estimatedDays, totalHours, softwareBudgetEstimate };
+  };
+
+  // Custom Automation Estimator Logic
+  const calculateAutomationEstimate = () => {
+    let baseHours = 4;
+    if (automationConfig.taskComplexity === 'medium') baseHours = 8;
+    if (automationConfig.taskComplexity === 'complex') baseHours = 16;
+    if (automationConfig.guiRequired) baseHours += 6;
+    if (automationConfig.scheduleType === 'event') baseHours += 4;
+
+    const estimatedDays = Math.max(1, Math.ceil(baseHours / 8));
+    const hoursSavedPerWeek = automationConfig.taskComplexity === 'simple' ? 3 : (automationConfig.taskComplexity === 'medium' ? 8 : 20);
+
+    return { estimatedDays, totalHours: baseHours, hoursSavedPerWeek };
+  };
+
+  // Diagnostics & Security Estimator Logic
+  const calculateSecurityEstimate = () => {
+    const scanHours = securityConfig.scanDepth === 'quick' ? 1 : (securityConfig.scanDepth === 'full' ? 3 : 6);
+    const perDeviceMinutes = 15;
+    const totalHours = Math.ceil(scanHours + (securityConfig.deviceCount * perDeviceMinutes) / 60 + (securityConfig.vulnerabilityAudit ? 4 : 0));
+    const estimatedDays = Math.max(1, Math.ceil(totalHours / 8));
+
+    return { estimatedDays, totalHours, riskReductionPct: securityConfig.osHardening ? 85 : 50 };
   };
 
   const navItems = [
@@ -1531,7 +1579,7 @@ function App() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Network Infrastructure Estimator</h3>
-                  <p className="text-xs text-slate-400">Configure corporate size to estimate hardware requirements & design turnaround</p>
+                  <p className="text-xs text-slate-400">Estimate hardware requirements, cost budgets & deployment days</p>
                 </div>
               </div>
 
@@ -1539,28 +1587,26 @@ function App() {
                 {/* WORKSTATIONS */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <MonitorCog size={14} className="text-lime-400" /> Connected Devices & Workstations
+                    <MonitorCog size={14} className="text-lime-400" /> Active Workstations & Ethernet Drops
                   </label>
                   <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <input 
                       type="range" 
                       min="5" 
-                      max="150" 
+                      max="120" 
                       step="5"
                       value={networkConfig.workstations}
                       onChange={(e) => setNetworkConfig(prev => ({ ...prev, workstations: parseInt(e.target.value) }))}
                       className="w-full accent-lime-400 cursor-pointer"
                     />
-                    <span className="text-xs font-bold text-lime-400 font-mono w-24 text-right">
-                      {networkConfig.workstations} Devices
-                    </span>
+                    <span className="text-xs font-bold text-lime-400 font-mono w-20 text-right">{networkConfig.workstations} Nodes</span>
                   </div>
                 </div>
 
                 {/* VLAN COUNT */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Radio size={14} className="text-lime-400" /> Isolated Subnets / VLANs Needed
+                    <Layers size={14} className="text-lime-400" /> Segmented VLANs (Dept/Guest/IoT)
                   </label>
                   <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <input 
@@ -1571,16 +1617,14 @@ function App() {
                       onChange={(e) => setNetworkConfig(prev => ({ ...prev, vlanCount: parseInt(e.target.value) }))}
                       className="w-full accent-lime-400 cursor-pointer"
                     />
-                    <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">
-                      {networkConfig.vlanCount} VLANs
-                    </span>
+                    <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">{networkConfig.vlanCount} VLANs</span>
                   </div>
                 </div>
 
-                {/* WIRELESS ACCESS POINTS */}
+                {/* WIRELESS APs */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Wifi size={14} className="text-lime-400" /> Enterprise Wireless Access Points
+                    <Wifi size={14} className="text-lime-400" /> Access Points Needed
                   </label>
                   <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <input 
@@ -1591,16 +1635,14 @@ function App() {
                       onChange={(e) => setNetworkConfig(prev => ({ ...prev, wirelessAP: parseInt(e.target.value) }))}
                       className="w-full accent-lime-400 cursor-pointer"
                     />
-                    <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">
-                      {networkConfig.wirelessAP} APs
-                    </span>
+                    <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">{networkConfig.wirelessAP} APs</span>
                   </div>
                 </div>
 
-                {/* ROUTER REDUNDANCY */}
+                {/* REDUNDANT ROUTER */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Router size={14} className="text-lime-400" /> High-Availability Dual Router Failover
+                    <Router size={14} className="text-lime-400" /> Gateway Failover / Redundancy
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -1611,7 +1653,7 @@ function App() {
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
-                      Single Edge Router
+                      Single Router
                     </button>
                     <button
                       onClick={() => setNetworkConfig(prev => ({ ...prev, redundantRouter: true }))}
@@ -1621,7 +1663,7 @@ function App() {
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
-                      Redundant Dual Gateways
+                      Dual High-Availability
                     </button>
                   </div>
                 </div>
@@ -1630,11 +1672,11 @@ function App() {
               {/* ESTIMATION SUMMARY */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
                 <div>
-                  <span className="text-xs text-slate-400">Design & Packet Tracer Delivery:</span>
+                  <span className="text-xs text-slate-400">Design & Simulation Time:</span>
                   <p className="text-2xl font-extrabold text-lime-400 font-mono">{netEst.totalDays} Business Days</p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-400">Est. Hardware Procurement Budget:</span>
+                  <span className="text-xs text-slate-400">Est. Hardware Budget (BOM):</span>
                   <p className="text-2xl font-extrabold text-emerald-400 font-mono">~${netEst.totalHardwareBudget}</p>
                 </div>
               </div>
@@ -1643,11 +1685,11 @@ function App() {
             {/* CALL TO ACTION */}
             <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/30 border border-lime-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <h4 className="font-bold text-white text-base">Plan your enterprise network infrastructure</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Get a customized Packet Tracer topology diagram and procurement costing layout for your facility.</p>
+                <h4 className="font-bold text-white text-base">Planning a office network refresh or expansion?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us build a simulated topology and complete hardware BOM for your enterprise.</p>
               </div>
               <button 
-                onClick={() => alert("Network topology consultation requested!")}
+                onClick={() => alert("Network topology request submitted!")}
                 className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
                 Request Network Design
@@ -1668,41 +1710,41 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-
-            {/* HEADER */}
+            
+            {/* EMERALD / TEAL HEADER */}
             <header className="relative p-8 rounded-3xl bg-linear-to-r from-emerald-950/80 via-slate-900 to-teal-950/40 border border-emerald-800/50 overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
               <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-emerald-300 uppercase bg-emerald-900/60 px-3 py-1 rounded-full border border-emerald-700/50 mb-3">
-                    <MonitorCog size={14} className="animate-pulse" /> Operating Systems & Workstation Optimization
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-emerald-400 uppercase bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50 mb-3">
+                    <MonitorCog size={14} className="animate-pulse" /> System Provisioning
                   </span>
                   <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-                    OS Deployment & System Optimization
+                    OS & Workstation Deployment
                   </h1>
                   <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
-                    Custom OS provisioning, Linux dual-boot configurations, driver optimization, software suites, and automated security hardening for enterprise workstations and individual rigs.
+                    Standardized operating system installations, dual-boot Linux/Windows configurations, workstation driver optimization, and automated software deployment.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap gap-2 shrink-0">
                   <span className="text-[11px] font-mono text-emerald-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
-                    <MonitorCog size={14} /> Windows 10/11 & Linux
+                    <Settings size={14} /> Linux / Windows
                   </span>
                   <span className="text-[11px] font-mono text-teal-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-teal-500/30 flex items-center gap-1.5">
-                    <ShieldCheck size={14} /> Security Hardened
+                    <ShieldCheck size={14} /> Hardened Policies
                   </span>
                 </div>
               </div>
             </header>
 
-            {/* SERVICES CARDS GRID */}
+            {/* SERVICES CARDS */}
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Sliders size={18} className="text-emerald-400" /> OS & System Setup Offerings
+                  <MonitorCog size={18} className="text-emerald-400" /> Workstation Configuration Options
                 </h2>
-                <span className="text-xs text-emerald-400 font-mono">Tailored System Deployment</span>
+                <span className="text-xs text-emerald-400 font-mono">Clean & Standardized</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1712,17 +1754,17 @@ function App() {
                     <MonitorCog size={24} />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
-                    Clean Operating System Installation
+                    Clean OS Installation
                   </h3>
                   <p className="text-slate-300 text-xs leading-relaxed mb-4">
-                    Unattended clean OS installations for Windows and Linux environments, removing bloatware and setting up optimized drive partitions.
+                    Fresh installation of Windows 11 Enterprise or Linux distributions (Ubuntu, Fedora, Debian) with bloatware removed.
                   </p>
                   <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> UEFI / GPT partition structuring
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> Full hardware driver validation
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> Zero bloatware clean deployment
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> Optimized boot time & service tweaks
                     </li>
                   </ul>
                 </div>
@@ -1733,17 +1775,17 @@ function App() {
                     <Layers size={24} />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-teal-300 transition-colors">
-                    Dual-Boot Linux & Windows Setups
+                    Dual-Boot Environments
                   </h3>
                   <p className="text-slate-300 text-xs leading-relaxed mb-4">
-                    Configuring dual-boot environments with GRUB bootloaders, isolated kernel partitions, and cross-OS shared file system access.
+                    Configuring GRUB bootloaders to run Linux for development alongside Windows for standard productivity software on single systems.
                   </p>
                   <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-teal-400 shrink-0" /> Safe GRUB & EFI bootloader tuning
+                      <CheckCircle2 size={14} className="text-teal-400 shrink-0" /> Safe disk partition splitting
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-teal-400 shrink-0" /> Shared NTFS/exFAT data partitions
+                      <CheckCircle2 size={14} className="text-teal-400 shrink-0" /> Shared NTFS storage partition setup
                     </li>
                   </ul>
                 </div>
@@ -1751,33 +1793,33 @@ function App() {
                 {/* CARD 3 */}
                 <div className="bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 group">
                   <div className="p-3 bg-cyan-950/80 rounded-xl w-fit text-cyan-400 border border-cyan-800/60 mb-4 group-hover:scale-110 transition-transform">
-                    <Settings size={24} />
+                    <Sliders size={24} />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-                    Driver Tuning & Security Hardening
+                    Software Suite Rollout
                   </h3>
                   <p className="text-slate-300 text-xs leading-relaxed mb-4">
-                    Full chipset/GPU driver installation, hardware performance profiling, registry tuning, telemetry disabling, and local security policy enforcement.
+                    Automated silent installations of essential dev kits, Office suites, antivirus tools, and remote management agents.
                   </p>
                   <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Performance & driver optimization
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Scripted winget / APT package manager setup
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Local firewall & endpoint protection
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Standardized desktop profile settings
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            {/* VISUAL 4-STEP PROCESS WITH IMAGES */}
+            {/* VISUAL PROCESS STEPS WITH IMAGES */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Zap size={18} className="text-emerald-400" /> OS Setup Execution Lifecycle
+                  <Zap size={18} className="text-emerald-400" /> Deployment Process
                 </h2>
-                <span className="text-xs text-emerald-400 font-mono">Standardized Setup Protocol</span>
+                <span className="text-xs text-emerald-400 font-mono">Streamlined & Fast</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1785,8 +1827,8 @@ function App() {
                 <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
                   <div className="relative h-36 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=600&q=80" 
-                      alt="System Audit & Backup" 
+                      src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80" 
+                      alt="Hardware Verification & Backup" 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
@@ -1797,10 +1839,10 @@ function App() {
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
-                        <HardDriveDownload size={14} className="text-emerald-400" /> Audit & Data Safeguard
+                        <HardDrive size={14} className="text-emerald-400" /> Pre-Install & Backup
                       </h3>
                       <p className="text-slate-400 text-xs leading-relaxed">
-                        Verify system specs, backup critical files, extract existing licenses, and check hardware SMART diagnostics.
+                        Verify system specs, run drive health diagnostics, and archive existing user data safely before formatting.
                       </p>
                     </div>
                   </div>
@@ -1810,8 +1852,8 @@ function App() {
                 <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
                   <div className="relative h-36 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" 
-                      alt="Partitioning & OS Flashing" 
+                      src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=600&q=80" 
+                      alt="Partitioning & OS Installation" 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
@@ -1822,10 +1864,10 @@ function App() {
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
-                        <MonitorCog size={14} className="text-emerald-400" /> Partition & Installation
+                        <MonitorCog size={14} className="text-emerald-400" /> Partition & OS Install
                       </h3>
                       <p className="text-slate-400 text-xs leading-relaxed">
-                        Format drives, configure bootable installation media, run unattended OS deployment, and set up boot partitions.
+                        Partition storage drives, install selected OS image, and configure bootloader parameters cleanly.
                       </p>
                     </div>
                   </div>
@@ -1835,8 +1877,8 @@ function App() {
                 <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
                   <div className="relative h-36 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" 
-                      alt="Driver Optimization & Suite Setup" 
+                      src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" 
+                      alt="Driver & Security Configuration" 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
@@ -1847,10 +1889,10 @@ function App() {
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
-                        <Settings size={14} className="text-emerald-400" /> Drivers & Applications
+                        <Settings size={14} className="text-emerald-400" /> Drivers & Security
                       </h3>
                       <p className="text-slate-400 text-xs leading-relaxed">
-                        Install target vendor display drivers, configure development runtimes, productivity suites, and system utilities.
+                        Inject vendor hardware drivers, apply system security policies, and enable BitLocker/LUKS encryption.
                       </p>
                     </div>
                   </div>
@@ -1860,8 +1902,8 @@ function App() {
                 <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
                   <div className="relative h-36 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" 
-                      alt="Hardening & Quality Assurance" 
+                      src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" 
+                      alt="Software Deployment & Handover" 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
@@ -1872,10 +1914,10 @@ function App() {
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
-                        <ShieldCheck size={14} className="text-emerald-400" /> Security Hardening & QA
+                        <CheckSquare size={14} className="text-emerald-400" /> Apps & User Handover
                       </h3>
                       <p className="text-slate-400 text-xs leading-relaxed">
-                        Disable background telemetry, execute system stress tests, setup automated backups, and verify stability.
+                        Deploy software suites via automated package scripts, restore user files, and perform final sign-off tests.
                       </p>
                     </div>
                   </div>
@@ -1883,23 +1925,23 @@ function App() {
               </div>
             </div>
 
-            {/* INTERACTIVE OS ESTIMATOR CALCULATOR */}
+            {/* INTERACTIVE OS CONFIGURATOR ESTIMATOR */}
             <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
               <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
                 <div className="p-2.5 bg-emerald-950/60 text-emerald-400 rounded-xl border border-emerald-800/40">
                   <Calculator size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">OS Setup & System Optimization Estimator</h3>
-                  <p className="text-xs text-slate-400">Calculate setup hours, completion timeframe, and software licensing budget</p>
+                  <h3 className="text-lg font-bold text-white">System Provisioning Estimator</h3>
+                  <p className="text-xs text-slate-400">Configure PC fleet parameters to estimate installation turnaround time</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* NUMBER OF WORKSTATIONS */}
+                {/* WORKSTATION COUNT */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <MonitorCog size={14} className="text-emerald-400" /> Workstations / Systems to Configure
+                    <MonitorCog size={14} className="text-emerald-400" /> Workstations / PCs to Setup
                   </label>
                   <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <input 
@@ -1910,55 +1952,36 @@ function App() {
                       onChange={(e) => setOsConfig(prev => ({ ...prev, workstations: parseInt(e.target.value) }))}
                       className="w-full accent-emerald-400 cursor-pointer"
                     />
-                    <span className="text-xs font-bold text-emerald-400 font-mono w-20 text-right">
-                      {osConfig.workstations} System{osConfig.workstations > 1 ? 's' : ''}
-                    </span>
+                    <span className="text-xs font-bold text-emerald-400 font-mono w-16 text-right">{osConfig.workstations} System{osConfig.workstations > 1 ? 's' : ''}</span>
                   </div>
                 </div>
 
-                {/* OS TYPE SELECTION */}
+                {/* OS TYPE */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Sliders size={14} className="text-emerald-400" /> Target OS Architecture
+                    <Settings size={14} className="text-emerald-400" /> Target Operating System
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    <button
-                      onClick={() => setOsConfig(prev => ({ ...prev, osType: 'windows' }))}
-                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                        osConfig.osType === 'windows'
-                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
-                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
-                    >
-                      Windows
-                    </button>
-                    <button
-                      onClick={() => setOsConfig(prev => ({ ...prev, osType: 'linux' }))}
-                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                        osConfig.osType === 'linux'
-                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
-                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
-                    >
-                      Linux OS
-                    </button>
-                    <button
-                      onClick={() => setOsConfig(prev => ({ ...prev, osType: 'dual' }))}
-                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                        osConfig.osType === 'dual'
-                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
-                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
-                    >
-                      Dual-Boot
-                    </button>
+                    {['windows', 'linux', 'dual'].map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setOsConfig(prev => ({ ...prev, osType: type }))}
+                        className={`p-2 rounded-xl border text-xs font-semibold capitalize cursor-pointer transition-all ${
+                          osConfig.osType === type
+                            ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        {type === 'dual' ? 'Dual Boot' : type}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                {/* SOFTWARE SUITE SELECTION */}
+                {/* SOFTWARE SUITE */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <CheckSquare size={14} className="text-emerald-400" /> Software & Utility Package
+                    <Sliders size={14} className="text-emerald-400" /> Software Bundle Level
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -1969,7 +1992,7 @@ function App() {
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
-                      Standard Essentials
+                      Basic Office & Web
                     </button>
                     <button
                       onClick={() => setOsConfig(prev => ({ ...prev, suite: 'enterprise' }))}
@@ -1979,49 +2002,38 @@ function App() {
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
-                      Enterprise & Developer
+                      Developer / Pro Suite
                     </button>
                   </div>
                 </div>
 
-                {/* SECURITY HARDENING TOGGLE */}
+                {/* SECURITY HARDENING */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <ShieldCheck size={14} className="text-emerald-400" /> Security Policy Hardening
+                    <ShieldCheck size={14} className="text-emerald-400" /> Endpoint Encryption & Hardening
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => setOsConfig(prev => ({ ...prev, securityHardening: false }))}
-                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                        !osConfig.securityHardening
-                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
-                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
-                    >
-                      Basic Firewall
-                    </button>
-                    <button
-                      onClick={() => setOsConfig(prev => ({ ...prev, securityHardening: true }))}
-                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                        osConfig.securityHardening
-                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
-                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
-                    >
-                      Full Policy Hardening
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setOsConfig(prev => ({ ...prev, securityHardening: !prev.securityHardening }))}
+                    className={`w-full p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                      osConfig.securityHardening
+                        ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <CheckSquare size={14} className={osConfig.securityHardening ? 'text-emerald-400' : 'text-slate-600'} />
+                    {osConfig.securityHardening ? 'Disk Encryption & Group Policy Enabled' : 'Standard Default Policies'}
+                  </button>
                 </div>
               </div>
 
               {/* ESTIMATION SUMMARY */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
                 <div>
-                  <span className="text-xs text-slate-400">Estimated Deployment Time:</span>
-                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{osEst.totalHours} Hours ({osEst.estimatedDays} Day{osEst.estimatedDays > 1 ? 's' : ''})</p>
+                  <span className="text-xs text-slate-400">Estimated Turnaround Time:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{osEst.estimatedDays} Business Day{osEst.estimatedDays > 1 ? 's' : ''} ({osEst.totalHours} hrs)</p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-400">Est. Software Budget Allocation:</span>
+                  <span className="text-xs text-slate-400">Software License Budget Est.:</span>
                   <p className="text-2xl font-extrabold text-emerald-400 font-mono">~${osEst.softwareBudgetEstimate}</p>
                 </div>
               </div>
@@ -2030,14 +2042,14 @@ function App() {
             {/* CALL TO ACTION */}
             <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-emerald-950/30 border border-emerald-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <h4 className="font-bold text-white text-base">Optimize and secure your computer systems</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Schedule system deployments or OS optimization for your business or individual setup.</p>
+                <h4 className="font-bold text-white text-base">Need workforce PCs formatted or setup?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us configure clean, high-performance workstation setups for your team.</p>
               </div>
               <button 
-                onClick={() => alert("OS setup consultation requested!")}
+                onClick={() => alert("OS setup request submitted!")}
                 className="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
-                Request OS Setup Audit
+                Request OS Provisioning
                 <ExternalLink size={14} />
               </button>
             </div>
@@ -2045,32 +2057,710 @@ function App() {
         );
 
       case 'software':
+        const autoEst = calculateAutomationEstimate();
         return (
-          <div className="max-w-5xl mx-auto space-y-6">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-amber-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-2xl font-extrabold text-white">Custom Task Automation & Scripts</h1>
-            <p className="text-slate-400 text-sm">Automating manual administrative workflows using lightweight Python & Java tools.</p>
+            
+            {/* AMBER / GOLD HEADER */}
+            <header className="relative p-8 rounded-3xl bg-linear-to-r from-amber-950/80 via-slate-900 to-orange-950/40 border border-amber-800/50 overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-amber-400 uppercase bg-amber-950/60 px-3 py-1 rounded-full border border-amber-800/50 mb-3">
+                    <Terminal size={14} className="animate-pulse" /> Workflow Automation
+                  </span>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    Custom Task Automation & Scripts
+                  </h1>
+                  <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
+                    Eliminate tedious manual workloads, repetitive file sorting, and complex data formatting through lightweight Python scripts, Java utilities, and scheduled background daemons.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-amber-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-amber-500/30 flex items-center gap-1.5">
+                    <FileCode size={14} /> Python & Java
+                  </span>
+                  <span className="text-[11px] font-mono text-orange-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-orange-500/30 flex items-center gap-1.5">
+                    <Bot size={14} /> Background Cron Jobs
+                  </span>
+                </div>
+              </div>
+            </header>
+
+            {/* WHAT WE OFFER IN CUSTOM AUTOMATION */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-amber-400" /> Automation Solutions
+                </h2>
+                <span className="text-xs text-amber-400 font-mono">Precision Scripting</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* CARD 1 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-amber-950/20 group">
+                  <div className="p-3 bg-amber-950/80 rounded-xl w-fit text-amber-400 border border-amber-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <FileCode size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
+                    File & Directory Monitors
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Automated file watchers that sort incoming downloads, parse PDF invoices, extract metadata, and organize directory trees automatically.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-amber-400 shrink-0" /> Real-time directory event listeners
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-amber-400 shrink-0" /> Custom tagging & automatic archive zip
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 2 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-orange-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-orange-950/20 group">
+                  <div className="p-3 bg-orange-950/80 rounded-xl w-fit text-orange-400 border border-orange-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Bot size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-300 transition-colors">
+                    Data Scraping & API Integration
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Python Beautiful Soup / Selenium scrapers and REST API connectors that aggregate web data directly into Excel or database stores.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-orange-400 shrink-0" /> Anti-blocking retry & proxy logic
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-orange-400 shrink-0" /> Scheduled daily execution scripts
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 3 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-yellow-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-yellow-950/20 group">
+                  <div className="p-3 bg-yellow-950/80 rounded-xl w-fit text-yellow-400 border border-yellow-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Terminal size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors">
+                    Desktop Utility Applications
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Lightweight Java or Python GUI tools for staff members to process batch images, calculate quotes, or convert proprietary formats.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-yellow-400 shrink-0" /> Cross-platform Windows & Mac support
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-yellow-400 shrink-0" /> Single executable binary delivery
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* VISUAL 4-STEP AUTOMATION DEVELOPMENT LIFECYCLE WITH IMAGES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Workflow size={18} className="text-amber-400" /> Automation Engineering Steps
+                </h2>
+                <span className="text-xs text-amber-400 font-mono">Rapid Script Delivery</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STEP 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80" 
+                      alt="Process Audit & Logic Mapping" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-amber-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                        <Search size={14} className="text-amber-400" /> Workflow Audit
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Identify manual bottlenecks, step-by-step logic rules, input data formats, and desired automation triggers.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" 
+                      alt="Script Development & Logic Coding" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-amber-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                        <Terminal size={14} className="text-amber-400" /> Script Development
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Write optimized Python or Java code with built-in error handling, logging, and edge-case exception handling.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80" 
+                      alt="Scheduler & Daemon Config" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-amber-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                        <Bot size={14} className="text-amber-400" /> Scheduling & Testing
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Bind scripts to Windows Task Scheduler, systemd services, or cron triggers and test with sample payloads.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" 
+                      alt="Deployment & Documentation" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-amber-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                        <Play size={14} className="text-amber-400" /> Deployment & Docs
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Deploy executable scripts onto production machines, provide clear README documentation, and hand over control.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE AUTOMATION ESTIMATOR CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-amber-950/60 text-amber-400 rounded-xl border border-amber-800/40">
+                  <Calculator size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Custom Automation Estimator</h3>
+                  <p className="text-xs text-slate-400">Configure script scope to calculate development turnaround and time saved</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* PROGRAMMING LANGUAGE */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <FileCode size={14} className="text-amber-400" /> Primary Tech Stack
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['python', 'java', 'bash'].map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => setAutomationConfig(prev => ({ ...prev, scriptLanguage: lang }))}
+                        className={`p-2 rounded-xl border text-xs font-semibold capitalize cursor-pointer transition-all ${
+                          automationConfig.scriptLanguage === lang
+                            ? 'bg-amber-950/60 border-amber-500 text-white'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* COMPLEXITY */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <BrainCircuit size={14} className="text-amber-400" /> Task Complexity Level
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['simple', 'medium', 'complex'].map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => setAutomationConfig(prev => ({ ...prev, taskComplexity: level }))}
+                        className={`p-2 rounded-xl border text-xs font-semibold capitalize cursor-pointer transition-all ${
+                          automationConfig.taskComplexity === level
+                            ? 'bg-amber-950/60 border-amber-500 text-white'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* SCHEDULE TYPE */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <RefreshCw size={14} className="text-amber-400" /> Execution Mode
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'manual', label: 'Manual Run' },
+                      { id: 'cron', label: 'Cron / Timer' },
+                      { id: 'event', label: 'File Event' }
+                    ].map((mode) => (
+                      <button
+                        key={mode.id}
+                        onClick={() => setAutomationConfig(prev => ({ ...prev, scheduleType: mode.id }))}
+                        className={`p-2 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                          automationConfig.scheduleType === mode.id
+                            ? 'bg-amber-950/60 border-amber-500 text-white'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* GUI REQUIRED */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Layout size={14} className="text-amber-400" /> User Interface (Desktop App GUI)
+                  </label>
+                  <button
+                    onClick={() => setAutomationConfig(prev => ({ ...prev, guiRequired: !prev.guiRequired }))}
+                    className={`w-full p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                      automationConfig.guiRequired
+                        ? 'bg-amber-950/60 border-amber-500 text-white'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <CheckSquare size={14} className={automationConfig.guiRequired ? 'text-amber-400' : 'text-slate-600'} />
+                    {automationConfig.guiRequired ? 'Desktop Window GUI Included' : 'Command-Line / Background Daemon'}
+                  </button>
+                </div>
+              </div>
+
+              {/* ESTIMATION SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Development Turnaround:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{autoEst.estimatedDays} Business Day{autoEst.estimatedDays > 1 ? 's' : ''} ({autoEst.totalHours} hrs)</p>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Labor Saved:</span>
+                  <p className="text-2xl font-extrabold text-amber-400 font-mono">~{autoEst.hoursSavedPerWeek} Hours / week</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-amber-950/30 border border-amber-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Tired of repetitive manual data tasks?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us build a custom automated Python or Java tool to handle it seamlessly.</p>
+              </div>
+              <button 
+                onClick={() => alert("Automation consultation requested!")}
+                className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Custom Script
+                <ExternalLink size={14} />
+              </button>
+            </div>
           </div>
         );
 
       case 'diagnostics':
+        const secEst = calculateSecurityEstimate();
         return (
-          <div className="max-w-5xl mx-auto space-y-6">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-red-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-2xl font-extrabold text-white">Diagnostics & Cyber Security</h1>
-            <p className="text-slate-400 text-sm">Hardware troubleshooting, malware remediation, and security posture audits.</p>
+            
+            {/* RED / CRIMSON HEADER */}
+            <header className="relative p-8 rounded-3xl bg-linear-to-r from-red-950/80 via-slate-900 to-rose-950/40 border border-red-800/50 overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-red-400 uppercase bg-red-950/60 px-3 py-1 rounded-full border border-red-800/50 mb-3">
+                    <ShieldAlert size={14} className="animate-pulse" /> Cybersecurity & Hardware Health
+                  </span>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    System Diagnostics & Security Audit
+                  </h1>
+                  <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
+                    Comprehensive hardware troubleshooting, malware eradication, system vulnerability auditing, and two-factor authentication (2FA) account hardening.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-red-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-red-500/30 flex items-center gap-1.5">
+                    <ShieldCheck size={14} /> Account Hardening
+                  </span>
+                  <span className="text-[11px] font-mono text-rose-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-rose-500/30 flex items-center gap-1.5">
+                    <Activity size={14} /> System Health Diagnostic
+                  </span>
+                </div>
+              </div>
+            </header>
+
+            {/* WHAT WE OFFER IN DIAGNOSTICS & SECURITY */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-red-400" /> Diagnostic & Security Capabilities
+                </h2>
+                <span className="text-xs text-red-400 font-mono">Proactive Protection</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* CARD 1 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-red-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-red-950/20 group">
+                  <div className="p-3 bg-red-950/80 rounded-xl w-fit text-red-400 border border-red-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Activity size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-red-300 transition-colors">
+                    Hardware Diagnostic & Thermal Stress Test
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    In-depth testing of RAM, SSD/HDD bad sectors, GPU thermal throttling, and power supply stability to isolate freeze and crash root causes.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-red-400 shrink-0" /> S.M.A.R.T drive telemetry inspection
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-red-400 shrink-0" /> MemTest86 memory integrity verification
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 2 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-rose-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-rose-950/20 group">
+                  <div className="p-3 bg-rose-950/80 rounded-xl w-fit text-rose-400 border border-rose-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <ShieldAlert size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-rose-300 transition-colors">
+                    Malware & Spyware Eradication
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Deep offline scanning to purge rootkits, trojans, ad-injectors, and cryptominers while safeguarding personal file integrity.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-rose-400 shrink-0" /> Host file & DNS hijack cleanup
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-rose-400 shrink-0" /> Browser extension & startup entry scrub
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 3 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-orange-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-orange-950/20 group">
+                  <div className="p-3 bg-orange-950/80 rounded-xl w-fit text-orange-400 border border-orange-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Key size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-300 transition-colors">
+                    Identity Hardening & 2FA Setup
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Remediating compromised accounts, configuring TOTP hardware authenticators, password managers, and revoking unauthorized sessions.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-orange-400 shrink-0" /> LinkedIn, Email, & Cloud account recovery
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-orange-400 shrink-0" /> Hardware key (YubiKey) & MFA deployment
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* VISUAL 4-STAGE AUDIT PROCESS WITH IMAGES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-red-400" /> Security Audit & Recovery Lifecycle
+                </h2>
+                <span className="text-xs text-red-400 font-mono">Thorough Security Response</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STEP 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" 
+                      alt="Threat Inspection & Telemetry Scan" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-red-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-red-300 transition-colors flex items-center gap-1.5">
+                        <Search size={14} className="text-red-400" /> Triage & Scan
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Isolate affected machines from local networks and perform offline boot scans to detect malware and hardware faults.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" 
+                      alt="Threat Eradication & Remediation" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-red-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-red-300 transition-colors flex items-center gap-1.5">
+                        <ShieldAlert size={14} className="text-red-400" /> Remediation
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Purge malicious files, restore altered system binaries, update BIOS/firmware, and repair corrupted registry keys.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&w=600&q=80" 
+                      alt="Account Security & MFA Lockdown" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-red-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-red-300 transition-colors flex items-center gap-1.5">
+                        <Key size={14} className="text-red-400" /> Account Lockdown
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Reset passwords, terminate stale OAuth sessions, configure authenticator 2FA, and store master credentials securely.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" 
+                      alt="Hardening Policies & Continuous Guard" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-red-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-red-300 transition-colors flex items-center gap-1.5">
+                        <Lock size={14} className="text-red-400" /> Hardening & Handover
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Apply OS security baselines, activate real-time Defender/Endpoint guards, and deliver a full diagnostic audit report.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE DIAGNOSTICS CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-red-950/60 text-red-400 rounded-xl border border-red-800/40">
+                  <Calculator size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Diagnostics & Security Audit Estimator</h3>
+                  <p className="text-xs text-slate-400">Configure system diagnostic parameters to estimate audit turnaround and risk mitigation</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* DEVICE COUNT */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <MonitorCog size={14} className="text-red-400" /> Systems / Devices to Audit
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="25" 
+                      value={securityConfig.deviceCount}
+                      onChange={(e) => setSecurityConfig(prev => ({ ...prev, deviceCount: parseInt(e.target.value) }))}
+                      className="w-full accent-red-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-red-400 font-mono w-16 text-right">{securityConfig.deviceCount} System{securityConfig.deviceCount > 1 ? 's' : ''}</span>
+                  </div>
+                </div>
+
+                {/* SCAN DEPTH */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Activity size={14} className="text-red-400" /> Diagnostic Scan Depth
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'quick', label: 'Quick Scan' },
+                      { id: 'full', label: 'Full Diagnostics' },
+                      { id: 'deep', label: 'Deep Stress Test' }
+                    ].map((mode) => (
+                      <button
+                        key={mode.id}
+                        onClick={() => setSecurityConfig(prev => ({ ...prev, scanDepth: mode.id }))}
+                        className={`p-2 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                          securityConfig.scanDepth === mode.id
+                            ? 'bg-red-950/60 border-red-500 text-white'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ACCOUNT AUDIT */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Key size={14} className="text-red-400" /> Credential & Account Audit
+                  </label>
+                  <button
+                    onClick={() => setSecurityConfig(prev => ({ ...prev, vulnerabilityAudit: !prev.vulnerabilityAudit }))}
+                    className={`w-full p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                      securityConfig.vulnerabilityAudit
+                        ? 'bg-red-950/60 border-red-500 text-white'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <CheckSquare size={14} className={securityConfig.vulnerabilityAudit ? 'text-red-400' : 'text-slate-600'} />
+                    {securityConfig.vulnerabilityAudit ? '2FA & OAuth Revocation Audit Included' : 'Hardware-Only Diagnostics'}
+                  </button>
+                </div>
+
+                {/* OS HARDENING */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Lock size={14} className="text-red-400" /> OS Hardening & Endpoint Guard
+                  </label>
+                  <button
+                    onClick={() => setSecurityConfig(prev => ({ ...prev, osHardening: !prev.osHardening }))}
+                    className={`w-full p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                      securityConfig.osHardening
+                        ? 'bg-red-950/60 border-red-500 text-white'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <CheckSquare size={14} className={securityConfig.osHardening ? 'text-red-400' : 'text-slate-600'} />
+                    {securityConfig.osHardening ? 'Full Endpoint Hardening Baseline' : 'Basic Malware Removal'}
+                  </button>
+                </div>
+              </div>
+
+              {/* ESTIMATION SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Turnaround Time:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{secEst.estimatedDays} Business Day{secEst.estimatedDays > 1 ? 's' : ''} ({secEst.totalHours} hrs)</p>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400">Vulnerability Risk Reduction:</span>
+                  <p className="text-2xl font-extrabold text-red-400 font-mono">~{secEst.riskReductionPct}% Protection</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-red-950/30 border border-red-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Experiencing computer crashes or security alerts?</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us perform a hardware diagnostic and re-secure your accounts with 2FA.</p>
+              </div>
+              <button 
+                onClick={() => alert("Security diagnostic request submitted!")}
+                className="bg-red-500 hover:bg-red-400 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Schedule System Audit
+                <ExternalLink size={14} />
+              </button>
+            </div>
           </div>
         );
 
@@ -2079,95 +2769,108 @@ function App() {
     }
   };
 
+  if (!hasEntered) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans">
+        {/* BACKGROUND GLOW EFFECTS */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-lime-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="max-w-xl text-center space-y-8 relative z-10">
+          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/80 px-4 py-1.5 rounded-full border border-lime-800/50 shadow-lg">
+            <Sparkles size={14} className="animate-pulse" /> Optima IT Solutions
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+            Next-Generation <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-lime-400 via-emerald-300 to-cyan-400">
+              IT Consulting Portal
+            </span>
+          </h1>
+
+          <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+            Enterprise infrastructure, cloud migrations, modern web applications, predictive machine learning analytics, and task automation systems.
+          </p>
+
+          <button
+            onClick={() => setHasEntered(true)}
+            className="inline-flex items-center gap-3 bg-lime-400 hover:bg-lime-300 text-slate-950 font-extrabold px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl shadow-lime-400/20 cursor-pointer text-sm"
+          >
+            Launch Solution Portal <ArrowRight size={18} />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-lime-500 selection:text-slate-950">
-      {!hasEntered ? (
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-radial from-slate-900 to-slate-950">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-lime-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-          
-          <div className="relative z-10 max-w-xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-lime-500/30 text-lime-400 text-xs font-mono shadow-lg">
-              <Zap size={14} className="animate-pulse" /> Optima IT Consulting Portal
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white">
-              OPTIMA <span className="text-lime-400">IT SOLUTIONS</span>
-            </h1>
-
-            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-              Explore our comprehensive portfolio of tech solutions—spanning Cloud Migration, Custom Web Apps, Network Topologies, OS Setup, and Business Intelligence.
-            </p>
-
-            <button
-              onClick={() => setHasEntered(true)}
-              className="inline-flex items-center gap-3 bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold px-8 py-4 rounded-2xl transition-all transform hover:scale-105 shadow-xl shadow-lime-400/20 cursor-pointer text-sm"
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans antialiased">
+      {/* SIDEBAR NAVIGATION */}
+      <aside className={`${isExpanded ? 'w-64' : 'w-20'} bg-slate-900/80 border-r border-slate-800/80 flex flex-col justify-between transition-all duration-300 shrink-0 sticky top-0 h-screen z-30 backdrop-blur-md`}>
+        <div className="p-4 space-y-6">
+          {/* BRAND LOGO */}
+          <div className="flex items-center justify-between">
+            {isExpanded ? (
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-lime-400 text-slate-950 rounded-xl font-black text-lg shadow-md shadow-lime-400/20">
+                  OI
+                </div>
+                <div>
+                  <h2 className="font-extrabold text-sm text-white leading-none">OPTIMA</h2>
+                  <span className="text-[10px] text-lime-400 font-mono tracking-wider uppercase">IT Solutions</span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-2 bg-lime-400 text-slate-950 rounded-xl font-black text-lg mx-auto shadow-md">
+                OI
+              </div>
+            )}
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors hidden md:block cursor-pointer"
             >
-              Enter Service Catalog <ArrowRight size={18} />
+              <ChevronLeft size={18} className={`transition-transform duration-300 ${!isExpanded ? 'rotate-180' : ''}`} />
             </button>
           </div>
-        </div>
-      ) : (
-        <div className="flex-1 flex overflow-hidden">
-          {/* SIDEBAR NAVIGATION */}
-          <aside className={`${isExpanded ? 'w-64' : 'w-20'} bg-slate-900/80 border-r border-slate-800/80 flex flex-col transition-all duration-300 shrink-0 relative backdrop-blur-xl z-20`}>
-            <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
-              {isExpanded ? (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-lime-400 text-slate-950 flex items-center justify-center font-black text-base shadow-lg shadow-lime-400/20">
-                    O
-                  </div>
-                  <span className="font-extrabold tracking-wider text-white text-sm">OPTIMA <span className="text-lime-400">IT</span></span>
-                </div>
-              ) : (
-                <div className="w-8 h-8 rounded-xl bg-lime-400 text-slate-950 flex items-center justify-center font-black text-base mx-auto">
-                  O
-                </div>
-              )}
-              <button 
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer hidden md:block"
-              >
-                <ChevronLeft size={16} className={`transition-transform duration-300 ${!isExpanded ? 'rotate-180' : ''}`} />
-              </button>
-            </div>
 
-            <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
-              {navItems.map((item) => {
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                      isActive 
-                        ? 'bg-lime-400 text-slate-950 shadow-lg shadow-lime-400/10 font-bold' 
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                    }`}
-                  >
-                    <span className="shrink-0">{item.icon}</span>
-                    {isExpanded && <span className="truncate">{item.label}</span>}
-                  </button>
-                );
-              })}
-            </nav>
-
-            <div className="p-3 border-t border-slate-800/80">
+          {/* NAV ITEMS */}
+          <nav className="space-y-1.5">
+            {navItems.map((item) => (
               <button
-                onClick={() => setHasEntered(false)}
-                className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-red-950/20 transition-colors cursor-pointer"
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  activeTab === item.id 
+                    ? 'bg-lime-400 text-slate-950 font-bold shadow-lg shadow-lime-400/10' 
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                }`}
+                title={!isExpanded ? item.label : undefined}
               >
-                <LogOut size={18} className="shrink-0" />
-                {isExpanded && <span>Exit Catalog</span>}
+                <span className={activeTab === item.id ? 'text-slate-950' : 'text-slate-400'}>
+                  {item.icon}
+                </span>
+                {isExpanded && <span className="truncate">{item.label}</span>}
               </button>
-            </div>
-          </aside>
-
-          {/* MAIN CONTENT AREA */}
-          <main className="flex-1 overflow-y-auto bg-slate-950 p-6 md:p-10">
-            {renderMainContent()}
-          </main>
+            ))}
+          </nav>
         </div>
-      )}
+
+        {/* BOTTOM USER / EXIT ACTION */}
+        <div className="p-4 border-t border-slate-800/80">
+          <button
+            onClick={() => setHasEntered(false)}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-red-950/30 transition-colors cursor-pointer"
+          >
+            <LogOut size={18} />
+            {isExpanded && <span>Exit Portal</span>}
+          </button>
+        </div>
+      </aside>
+
+      {/* MAIN CONTENT AREA */}
+      <main className="flex-1 p-6 md:p-10 overflow-y-auto">
+        {renderMainContent()}
+      </main>
     </div>
   );
 }
