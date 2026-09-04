@@ -35,7 +35,11 @@ import {
   BrainCircuit,
   Filter,
   Workflow,
-  Table
+  Table,
+  Wifi,
+  Router,
+  Radio,
+  FileSpreadsheet
 } from 'lucide-react';
 
 function App() {
@@ -65,6 +69,14 @@ function App() {
     dataSources: 2,
     enableML: true,
     dashboardFrequency: 'realtime' // 'daily' | 'realtime'
+  });
+
+  // Interactive state for Network Architecture Estimator
+  const [networkConfig, setNetworkConfig] = useState({
+    workstations: 25,
+    vlanCount: 3,
+    wirelessAP: 2,
+    redundantRouter: false
   });
 
   const toggleFeature = (feature) => {
@@ -108,6 +120,23 @@ function App() {
     const estimatedValueGain = Math.round((analyticsConfig.rowCount * 0.08) + (analyticsConfig.dataSources * 450));
 
     return { totalDays, pipelineCost, estimatedValueGain };
+  };
+
+  // Network Architecture Estimator Logic
+  const calculateNetworkEstimate = () => {
+    const baseDays = 4;
+    const switchDays = Math.ceil(networkConfig.workstations / 24);
+    const vlanDays = networkConfig.vlanCount * 1;
+    const totalDays = baseDays + switchDays + vlanDays + (networkConfig.redundantRouter ? 2 : 0);
+
+    // Hardware cost approximation in ZAR / USD budget estimation
+    const switchCost = switchDays * 450;
+    const apCost = networkConfig.wirelessAP * 180;
+    const routerCost = networkConfig.redundantRouter ? 900 : 450;
+    const cablingCost = networkConfig.workstations * 25;
+    const totalHardwareBudget = switchCost + apCost + routerCost + cablingCost;
+
+    return { totalDays, totalHardwareBudget };
   };
 
   const navItems = [
@@ -1247,8 +1276,9 @@ function App() {
         );
 
       case 'network':
+        const netEst = calculateNetworkEstimate();
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
@@ -1257,30 +1287,350 @@ function App() {
               Back to Overview Menu
             </button>
             
-            <header className="border-b border-slate-800/80 pb-6">
-              <span className="text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/40 px-3 py-1 rounded-full border border-lime-800/30">
-                Enterprise Consulting Phase
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">Network Architecture & Infrastructure Budgeting</h1>
-              <p className="text-slate-400 text-sm mt-1">Our end-to-end engineering pipeline for designing scalable, secure corporate environments.</p>
+            {/* LIME / EMERALD HEADER */}
+            <header className="relative p-8 rounded-3xl bg-linear-to-r from-lime-950/80 via-slate-900 to-emerald-950/40 border border-lime-800/50 overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-lime-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-3 py-1 rounded-full border border-lime-800/50 mb-3">
+                    <Network size={14} className="animate-pulse" /> Enterprise Infrastructure
+                  </span>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    Network Architecture & Hardware Budgeting
+                  </h1>
+                  <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
+                    End-to-end network topology engineering, virtual Cisco Packet Tracer simulations, VLAN segmentations, and comprehensive hardware procurement planning.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-lime-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-lime-500/30 flex items-center gap-1.5">
+                    <Router size={14} /> Cisco Packet Tracer
+                  </span>
+                  <span className="text-[11px] font-mono text-emerald-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
+                    <Wifi size={14} /> VLAN & Subnetting
+                  </span>
+                </div>
+              </div>
             </header>
 
+            {/* WHAT WE OFFER IN NETWORK ARCHITECTURE */}
             <div className="space-y-4">
-              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
-                <Layers className="text-lime-400 shrink-0" size={20} />
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-lime-400" /> Infrastructure Capabilities
+                </h2>
+                <span className="text-xs text-lime-400 font-mono">Enterprise Standard Solutions</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* CARD 1 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-lime-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-lime-950/20 group">
+                  <div className="p-3 bg-lime-950/80 rounded-xl w-fit text-lime-400 border border-lime-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Router size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-lime-300 transition-colors">
+                    Cisco Packet Tracer Simulations
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Full pre-deployment virtual network modeling. Pre-verify router interfaces, trunking protocols, and ping latency before buying physical gear.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-lime-400 shrink-0" /> Multi-router & switch topology diagrams
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-lime-400 shrink-0" /> Command-line CLI configuration scripts
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 2 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-emerald-950/20 group">
+                  <div className="p-3 bg-emerald-950/80 rounded-xl w-fit text-emerald-400 border border-emerald-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Radio size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                    VLAN & Subnet Isolation
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Segment corporate departments, guest Wi-Fi, and IoT devices into distinct subnet ranges to reduce broadcast traffic and isolate security breaches.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> Custom IPv4/IPv6 CIDR subnet masks
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> Inter-VLAN routing & ACL firewalls
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 3 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 group">
+                  <div className="p-3 bg-cyan-950/80 rounded-xl w-fit text-cyan-400 border border-cyan-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <FileSpreadsheet size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                    Procurement Costing & BOM
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Itemized Bill of Materials (BOM) for switches, patch panels, Cat6 cabling, access points, and server rack mountings catered to your budget.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Multi-vendor price comparison (Cisco/Ubiquiti)
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Future-proofed expansion forecasting
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* VISUAL 4-STEP NETWORK DESIGN PROCESS WITH IMAGES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-lime-400" /> Engineering & Deployment Lifecycle
+                </h2>
+                <span className="text-xs text-lime-400 font-mono">From Site Map to Hardware</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STEP 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-lime-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" 
+                      alt="Site Survey & Floor Planning" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-lime-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-lime-300 transition-colors flex items-center gap-1.5">
+                        <Layers size={14} className="text-lime-400" /> Physical Site Assessment
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Analyze office blueprints, physical port counts, wall drops, and calculate cable run distances to prevent signal attenuation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-lime-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80" 
+                      alt="Packet Tracer Topology Modeling" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-lime-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-lime-300 transition-colors flex items-center gap-1.5">
+                        <Cpu size={14} className="text-lime-400" /> Virtual Topology Simulation
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Construct full interactive network schematics in Cisco Packet Tracer, testing IP addressing schemes and switch trunking.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-lime-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" 
+                      alt="VLAN Security & Subnet Design" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-lime-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-lime-300 transition-colors flex items-center gap-1.5">
+                        <ShieldAlert size={14} className="text-lime-400" /> Security & Subnet Mapping
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Assign VLAN IDs, configure DHCP pools, setup WPA3 enterprise security for wireless APs, and write router access control lists.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-lime-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" 
+                      alt="Hardware Procurement & Deployment" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-lime-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-lime-300 transition-colors flex items-center gap-1.5">
+                        <FileSpreadsheet size={14} className="text-lime-400" /> Budget & Procurement
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Generate final physical hardware procurement manifests, complete with rack layout guides and cable management specs.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE NETWORK HARDWARE ESTIMATOR CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-lime-950/60 text-lime-400 rounded-xl border border-lime-800/40">
+                  <Calculator size={20} />
+                </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">1. Site Assessment & Requirements</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">Analyzing floor plans and physical constraints to calculate hardware density targets.</p>
+                  <h3 className="text-lg font-bold text-white">Network Infrastructure Estimator</h3>
+                  <p className="text-xs text-slate-400">Configure corporate size to estimate hardware requirements & design turnaround</p>
                 </div>
               </div>
 
-              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
-                <Cpu className="text-lime-400 shrink-0" size={20} />
-                <div>
-                  <h3 className="text-base font-bold text-white">2. Cisco Packet Tracer Topology Simulation</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">Building complete virtual models of edge routers, managed switches, and VLAN distributions.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* WORKSTATIONS */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <MonitorCog size={14} className="text-lime-400" /> Connected Devices & Workstations
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="5" 
+                      max="150" 
+                      step="5"
+                      value={networkConfig.workstations}
+                      onChange={(e) => setNetworkConfig(prev => ({ ...prev, workstations: parseInt(e.target.value) }))}
+                      className="w-full accent-lime-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-lime-400 font-mono w-24 text-right">
+                      {networkConfig.workstations} Devices
+                    </span>
+                  </div>
+                </div>
+
+                {/* VLAN COUNT */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Network size={14} className="text-lime-400" /> Isolated VLAN Segments
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="8" 
+                      value={networkConfig.vlanCount}
+                      onChange={(e) => setNetworkConfig(prev => ({ ...prev, vlanCount: parseInt(e.target.value) }))}
+                      className="w-full accent-lime-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">
+                      {networkConfig.vlanCount} VLAN{networkConfig.vlanCount > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* WIRELESS ACCESS POINTS */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Wifi size={14} className="text-lime-400" /> Access Points / Wi-Fi Zones
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="10" 
+                      value={networkConfig.wirelessAP}
+                      onChange={(e) => setNetworkConfig(prev => ({ ...prev, wirelessAP: parseInt(e.target.value) }))}
+                      className="w-full accent-lime-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">
+                      {networkConfig.wirelessAP} AP{networkConfig.wirelessAP > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* REDUNDANT ROUTER */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Router size={14} className="text-lime-400" /> High Availability (Dual Gateway Router)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setNetworkConfig(prev => ({ ...prev, redundantRouter: false }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        !networkConfig.redundantRouter
+                          ? 'bg-lime-950/60 border-lime-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Single Router Gateway
+                    </button>
+                    <button
+                      onClick={() => setNetworkConfig(prev => ({ ...prev, redundantRouter: true }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        networkConfig.redundantRouter
+                          ? 'bg-lime-950/60 border-lime-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Dual Router Failover
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              {/* ESTIMATION SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Design & Simulation Timeline:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{netEst.totalDays} Business Days</p>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Hardware Procurement Budget:</span>
+                  <p className="text-2xl font-extrabold text-emerald-400 font-mono">~${netEst.totalHardwareBudget} Est.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/30 border border-lime-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Plan a resilient network for your facility</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us simulate your topology in Cisco Packet Tracer and generate an optimized hardware proposal.</p>
+              </div>
+              <button 
+                onClick={() => alert("Network assessment requested!")}
+                className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Network Design
+                <ExternalLink size={14} />
+              </button>
             </div>
           </div>
         );
