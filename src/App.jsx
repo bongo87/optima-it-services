@@ -28,7 +28,14 @@ import {
   Zap,
   Search,
   Layout,
-  Rocket
+  Rocket,
+  LineChart,
+  PieChart,
+  TrendingUp,
+  BrainCircuit,
+  Filter,
+  Workflow,
+  Table
 } from 'lucide-react';
 
 function App() {
@@ -50,6 +57,14 @@ function App() {
     databaseGb: 50,
     backupStrategy: 'daily', // 'daily' | 'realtime'
     supportLevel: 'business' // 'basic' | 'business'
+  });
+
+  // Interactive state for Data & Analytics Estimator
+  const [analyticsConfig, setAnalyticsConfig] = useState({
+    rowCount: 50000,
+    dataSources: 2,
+    enableML: true,
+    dashboardFrequency: 'realtime' // 'daily' | 'realtime'
   });
 
   const toggleFeature = (feature) => {
@@ -79,6 +94,20 @@ function App() {
     const monthlyTotal = Math.round(serverCost + storageCost + backupCost + supportCost);
 
     return { totalDays, monthlyTotal };
+  };
+
+  // Data & Analytics Estimator Logic
+  const calculateAnalyticsEstimate = () => {
+    const baseDays = 3;
+    const sourceDays = analyticsConfig.dataSources * 2;
+    const mlDays = analyticsConfig.enableML ? 4 : 0;
+    const volumeDays = Math.ceil(analyticsConfig.rowCount / 100000);
+    const totalDays = baseDays + sourceDays + mlDays + volumeDays;
+
+    const pipelineCost = analyticsConfig.dataSources * 150 + (analyticsConfig.enableML ? 300 : 100);
+    const estimatedValueGain = Math.round((analyticsConfig.rowCount * 0.08) + (analyticsConfig.dataSources * 450));
+
+    return { totalDays, pipelineCost, estimatedValueGain };
   };
 
   const navItems = [
@@ -849,44 +878,370 @@ function App() {
         );
 
       case 'analytics':
+        const analyticsEst = calculateAnalyticsEstimate();
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-violet-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
             
-            <header className="border-b border-slate-800/80 pb-6">
-              <span className="text-xs font-bold tracking-widest text-violet-400 uppercase bg-violet-950/40 px-3 py-1 rounded-full border border-violet-800/30">
-                Business Intelligence Engine
-              </span>
-              <h1 className="text-3xl font-extrabold text-white mt-3">Data Analytics & Predictive Dashboards</h1>
-              <p className="text-slate-400 text-sm mt-1">Converting operational data into clear visual insights and automated clustering reports.</p>
+            {/* VIBRANT VIOLET/FUCHSIA HEADER */}
+            <header className="relative p-8 rounded-3xl bg-linear-to-r from-violet-950/80 via-slate-900 to-fuchsia-950/40 border border-violet-800/50 overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-violet-300 uppercase bg-violet-900/60 px-3 py-1 rounded-full border border-violet-700/50 mb-3">
+                    <BrainCircuit size={14} className="animate-pulse" /> Business Intelligence Engine
+                  </span>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    Data Analytics & Predictive Dashboards
+                  </h1>
+                  <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
+                    Transforming raw, multi-source operational data into dynamic visual dashboards, automated cluster segmentation, and actionable business intelligence.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-violet-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-violet-500/30 flex items-center gap-1.5">
+                    <BarChart3 size={14} /> Power BI
+                  </span>
+                  <span className="text-[11px] font-mono text-fuchsia-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-fuchsia-500/30 flex items-center gap-1.5">
+                    <BrainCircuit size={14} /> Python & Scikit-learn
+                  </span>
+                </div>
+              </div>
             </header>
 
+            {/* VIBRANT CORE ANALYTICS SOLUTIONS GRID */}
             <div className="space-y-4">
-              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
-                <BarChart3 className="text-violet-400 shrink-0" size={24} />
-                <div>
-                  <h3 className="text-base font-bold text-white">Power BI Dashboard Generation</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    Structuring relational data schemas and producing dynamic visual reports for operational tracking and executive summaries.
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <TrendingUp size={18} className="text-violet-400" /> Analytics Capabilities
+                </h2>
+                <span className="text-xs text-violet-400 font-mono">End-to-End Insights</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* CARD 1: POWER BI */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-violet-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-violet-950/20 group">
+                  <div className="p-3 bg-violet-950/80 rounded-xl w-fit text-violet-400 border border-violet-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <BarChart3 size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-violet-300 transition-colors">
+                    Power BI Dashboard Generation
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Structuring relational data models, automated refresh pipelines, and interactive executive reporting views across key KPIs.
                   </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-violet-400 shrink-0" /> Dynamic drill-down filter visualizer
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-violet-400 shrink-0" /> Automated scheduled dataset refresh
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 2: KMEANS ML */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-fuchsia-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-fuchsia-950/20 group">
+                  <div className="p-3 bg-fuchsia-950/80 rounded-xl w-fit text-fuchsia-400 border border-fuchsia-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <BrainCircuit size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-fuchsia-300 transition-colors">
+                    KMeans Machine Learning Clustering
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Leveraging Scikit-learn to run unsupervised clustering on customer segments, transaction histories, and operational metrics.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-fuchsia-400 shrink-0" /> Optimal centroid detection algorithms
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-fuchsia-400 shrink-0" /> NumPy & Matplotlib scatter plot reports
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 3: SQL & ETL */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 group">
+                  <div className="p-3 bg-cyan-950/80 rounded-xl w-fit text-cyan-400 border border-cyan-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Database size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                    SQL Warehousing & ETL Pipelines
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Designing normalized SQL relational schemas, PostgreSQL queries, and automated data cleaning Python scripts.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Automated anomaly & null-value cleanup
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Multi-source CSV & SQL consolidation
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* VISUAL ANALYTICS WORKFLOW LIFECYCLE WITH IMAGES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Workflow size={18} className="text-violet-400" /> The 4-Stage Data Pipeline
+                </h2>
+                <span className="text-xs text-violet-400 font-mono">From Raw Data to Insight</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STAGE 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-violet-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=600&q=80" 
+                      alt="Data Ingestion & Aggregation" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-violet-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-violet-300 transition-colors flex items-center gap-1.5">
+                        <Filter size={14} className="text-violet-400" /> Ingestion & Cleaning
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Extract raw data from CSVs, SQL databases, or APIs; sanitize duplicates, standardise formats, and handle missing attributes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STAGE 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-violet-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" 
+                      alt="Relational Modeling & Warehousing" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-violet-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-violet-300 transition-colors flex items-center gap-1.5">
+                        <Table size={14} className="text-violet-400" /> Relational Modeling
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Construct star schemas, primary/foreign key relationships, and optimized SQL views tailored for analytics queries.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STAGE 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-violet-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" 
+                      alt="Predictive Modeling & Clustering" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-violet-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-violet-300 transition-colors flex items-center gap-1.5">
+                        <BrainCircuit size={14} className="text-violet-400" /> Machine Learning
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Execute Python unsupervised KMeans algorithms to uncover hidden patterns, customer tiers, and operational clusters.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STAGE 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-violet-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" 
+                      alt="Dashboard Visualization & Reporting" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-violet-500 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-violet-300 transition-colors flex items-center gap-1.5">
+                        <BarChart3 size={14} className="text-violet-400" /> Interactive BI
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Publish sleek Power BI reporting suites with dynamic filters, time-series projections, and executive drill-down cards.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE DATA PIPELINE CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-violet-950/60 text-violet-400 rounded-xl border border-violet-800/40">
+                  <Calculator size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Data Pipeline & Insights Estimator</h3>
+                  <p className="text-xs text-slate-400">Configure dataset parameters to estimate setup timeframe & value ROI</p>
                 </div>
               </div>
 
-              <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl flex gap-4 items-start">
-                <Database className="text-violet-400 shrink-0" size={24} />
-                <div>
-                  <h3 className="text-base font-bold text-white">Machine Learning & Data Clustering</h3>
-                  <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                    Applying Python statistical libraries (NumPy, Scikit-learn) and unsupervised algorithms (KMeans) to segment customer groups and recognize patterns.
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* DATASET ROWS */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Table size={14} className="text-violet-400" /> Total Record Volume (Rows)
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="5000" 
+                      max="500000" 
+                      step="5000"
+                      value={analyticsConfig.rowCount}
+                      onChange={(e) => setAnalyticsConfig(prev => ({ ...prev, rowCount: parseInt(e.target.value) }))}
+                      className="w-full accent-violet-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-violet-400 font-mono w-20 text-right">
+                      {(analyticsConfig.rowCount / 1000).toFixed(0)}k Rows
+                    </span>
+                  </div>
+                </div>
+
+                {/* DATA SOURCES */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Database size={14} className="text-violet-400" /> Data Sources / Databases to Merge
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="8" 
+                      value={analyticsConfig.dataSources}
+                      onChange={(e) => setAnalyticsConfig(prev => ({ ...prev, dataSources: parseInt(e.target.value) }))}
+                      className="w-full accent-violet-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-violet-400 font-mono w-16 text-right">
+                      {analyticsConfig.dataSources} Source{analyticsConfig.dataSources > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* MACHINE LEARNING TOGGLE */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <BrainCircuit size={14} className="text-violet-400" /> Predictive Clustering & ML
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setAnalyticsConfig(prev => ({ ...prev, enableML: false }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        !analyticsConfig.enableML
+                          ? 'bg-violet-950/60 border-violet-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Standard BI Dashboards
+                    </button>
+                    <button
+                      onClick={() => setAnalyticsConfig(prev => ({ ...prev, enableML: true }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        analyticsConfig.enableML
+                          ? 'bg-violet-950/60 border-violet-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      KMeans ML Included
+                    </button>
+                  </div>
+                </div>
+
+                {/* DASHBOARD REFRESH FREQUENCY */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <RefreshCw size={14} className="text-violet-400" /> Data Sync Frequency
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setAnalyticsConfig(prev => ({ ...prev, dashboardFrequency: 'daily' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        analyticsConfig.dashboardFrequency === 'daily'
+                          ? 'bg-violet-950/60 border-violet-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Daily Scheduled Sync
+                    </button>
+                    <button
+                      onClick={() => setAnalyticsConfig(prev => ({ ...prev, dashboardFrequency: 'realtime' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        analyticsConfig.dashboardFrequency === 'realtime'
+                          ? 'bg-violet-950/60 border-violet-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Near Real-time Gateway
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              {/* ESTIMATION SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Delivery Timeframe:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{analyticsEst.totalDays} Business Days</p>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400">Est. Operational Efficiency Gain:</span>
+                  <p className="text-2xl font-extrabold text-fuchsia-400 font-mono">+${analyticsEst.estimatedValueGain} / month</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-violet-950/30 border border-violet-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Unlock the full value of your business data</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Let us build automated Power BI reports and machine learning clustering models for your datasets.</p>
+              </div>
+              <button 
+                onClick={() => alert("Analytics consultation requested!")}
+                className="bg-violet-500 hover:bg-violet-400 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request Analytics Audit
+                <ExternalLink size={14} />
+              </button>
             </div>
           </div>
         );
