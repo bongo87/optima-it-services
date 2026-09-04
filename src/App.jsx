@@ -39,7 +39,11 @@ import {
   Wifi,
   Router,
   Radio,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Settings,
+  HardDriveDownload,
+  Sliders,
+  CheckSquare
 } from 'lucide-react';
 
 function App() {
@@ -77,6 +81,14 @@ function App() {
     vlanCount: 3,
     wirelessAP: 2,
     redundantRouter: false
+  });
+
+  // Interactive state for OS & System Setup Configurator
+  const [osConfig, setOsConfig] = useState({
+    workstations: 5,
+    osType: 'dual', // 'windows' | 'linux' | 'dual'
+    suite: 'enterprise', // 'basic' | 'enterprise'
+    securityHardening: true
   });
 
   const toggleFeature = (feature) => {
@@ -137,6 +149,16 @@ function App() {
     const totalHardwareBudget = switchCost + apCost + routerCost + cablingCost;
 
     return { totalDays, totalHardwareBudget };
+  };
+
+  // OS & System Setup Estimator Logic
+  const calculateOsEstimate = () => {
+    const hoursPerMachine = osConfig.osType === 'dual' ? 2.5 : 1.5;
+    const totalHours = Math.ceil(osConfig.workstations * hoursPerMachine + (osConfig.securityHardening ? 2 : 0));
+    const estimatedDays = Math.max(1, Math.ceil(totalHours / 8));
+    const softwareBudgetEstimate = osConfig.workstations * (osConfig.suite === 'enterprise' ? 150 : 50);
+
+    return { estimatedDays, totalHours, softwareBudgetEstimate };
   };
 
   const navItems = [
@@ -1538,7 +1560,7 @@ function App() {
                 {/* VLAN COUNT */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Network size={14} className="text-lime-400" /> Isolated VLAN Segments
+                    <Radio size={14} className="text-lime-400" /> Isolated Subnets / VLANs Needed
                   </label>
                   <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <input 
@@ -1550,7 +1572,7 @@ function App() {
                       className="w-full accent-lime-400 cursor-pointer"
                     />
                     <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">
-                      {networkConfig.vlanCount} VLAN{networkConfig.vlanCount > 1 ? 's' : ''}
+                      {networkConfig.vlanCount} VLANs
                     </span>
                   </div>
                 </div>
@@ -1558,7 +1580,7 @@ function App() {
                 {/* WIRELESS ACCESS POINTS */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Wifi size={14} className="text-lime-400" /> Access Points / Wi-Fi Zones
+                    <Wifi size={14} className="text-lime-400" /> Enterprise Wireless Access Points
                   </label>
                   <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <input 
@@ -1570,15 +1592,15 @@ function App() {
                       className="w-full accent-lime-400 cursor-pointer"
                     />
                     <span className="text-xs font-bold text-lime-400 font-mono w-16 text-right">
-                      {networkConfig.wirelessAP} AP{networkConfig.wirelessAP > 1 ? 's' : ''}
+                      {networkConfig.wirelessAP} APs
                     </span>
                   </div>
                 </div>
 
-                {/* REDUNDANT ROUTER */}
+                {/* ROUTER REDUNDANCY */}
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                    <Router size={14} className="text-lime-400" /> High Availability (Dual Gateway Router)
+                    <Router size={14} className="text-lime-400" /> High-Availability Dual Router Failover
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -1589,7 +1611,7 @@ function App() {
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
-                      Single Router Gateway
+                      Single Edge Router
                     </button>
                     <button
                       onClick={() => setNetworkConfig(prev => ({ ...prev, redundantRouter: true }))}
@@ -1599,7 +1621,7 @@ function App() {
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
-                      Dual Router Failover
+                      Redundant Dual Gateways
                     </button>
                   </div>
                 </div>
@@ -1608,12 +1630,12 @@ function App() {
               {/* ESTIMATION SUMMARY */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
                 <div>
-                  <span className="text-xs text-slate-400">Design & Simulation Timeline:</span>
+                  <span className="text-xs text-slate-400">Design & Packet Tracer Delivery:</span>
                   <p className="text-2xl font-extrabold text-lime-400 font-mono">{netEst.totalDays} Business Days</p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-400">Estimated Hardware Procurement Budget:</span>
-                  <p className="text-2xl font-extrabold text-emerald-400 font-mono">~${netEst.totalHardwareBudget} Est.</p>
+                  <span className="text-xs text-slate-400">Est. Hardware Procurement Budget:</span>
+                  <p className="text-2xl font-extrabold text-emerald-400 font-mono">~${netEst.totalHardwareBudget}</p>
                 </div>
               </div>
             </div>
@@ -1621,11 +1643,11 @@ function App() {
             {/* CALL TO ACTION */}
             <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-lime-950/30 border border-lime-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <h4 className="font-bold text-white text-base">Plan a resilient network for your facility</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Let us simulate your topology in Cisco Packet Tracer and generate an optimized hardware proposal.</p>
+                <h4 className="font-bold text-white text-base">Plan your enterprise network infrastructure</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Get a customized Packet Tracer topology diagram and procurement costing layout for your facility.</p>
               </div>
               <button 
-                onClick={() => alert("Network assessment requested!")}
+                onClick={() => alert("Network topology consultation requested!")}
                 className="bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
               >
                 Request Network Design
@@ -1636,23 +1658,395 @@ function App() {
         );
 
       case 'os':
+        const osEst = calculateOsEstimate();
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-10">
             <button 
               onClick={() => setActiveTab('overview')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition-colors group cursor-pointer"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">OS Deployment & Software Suites</h1>
-            <p className="text-slate-400 text-sm">Clean installations (Windows/Linux), OEM driver tuning, and Microsoft 365 software integration.</p>
+
+            {/* HEADER */}
+            <header className="relative p-8 rounded-3xl bg-linear-to-r from-emerald-950/80 via-slate-900 to-teal-950/40 border border-emerald-800/50 overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-emerald-300 uppercase bg-emerald-900/60 px-3 py-1 rounded-full border border-emerald-700/50 mb-3">
+                    <MonitorCog size={14} className="animate-pulse" /> Operating Systems & Workstation Optimization
+                  </span>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    OS Deployment & System Optimization
+                  </h1>
+                  <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
+                    Custom OS provisioning, Linux dual-boot configurations, driver optimization, software suites, and automated security hardening for enterprise workstations and individual rigs.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-emerald-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
+                    <MonitorCog size={14} /> Windows 10/11 & Linux
+                  </span>
+                  <span className="text-[11px] font-mono text-teal-300 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-teal-500/30 flex items-center gap-1.5">
+                    <ShieldCheck size={14} /> Security Hardened
+                  </span>
+                </div>
+              </div>
+            </header>
+
+            {/* SERVICES CARDS GRID */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Sliders size={18} className="text-emerald-400" /> OS & System Setup Offerings
+                </h2>
+                <span className="text-xs text-emerald-400 font-mono">Tailored System Deployment</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* CARD 1 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-emerald-950/20 group">
+                  <div className="p-3 bg-emerald-950/80 rounded-xl w-fit text-emerald-400 border border-emerald-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <MonitorCog size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                    Clean Operating System Installation
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Unattended clean OS installations for Windows and Linux environments, removing bloatware and setting up optimized drive partitions.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> UEFI / GPT partition structuring
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> Zero bloatware clean deployment
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 2 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-teal-950/20 group">
+                  <div className="p-3 bg-teal-950/80 rounded-xl w-fit text-teal-400 border border-teal-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Layers size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-teal-300 transition-colors">
+                    Dual-Boot Linux & Windows Setups
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Configuring dual-boot environments with GRUB bootloaders, isolated kernel partitions, and cross-OS shared file system access.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-teal-400 shrink-0" /> Safe GRUB & EFI bootloader tuning
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-teal-400 shrink-0" /> Shared NTFS/exFAT data partitions
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CARD 3 */}
+                <div className="bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 p-6 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 group">
+                  <div className="p-3 bg-cyan-950/80 rounded-xl w-fit text-cyan-400 border border-cyan-800/60 mb-4 group-hover:scale-110 transition-transform">
+                    <Settings size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                    Driver Tuning & Security Hardening
+                  </h3>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
+                    Full chipset/GPU driver installation, hardware performance profiling, registry tuning, telemetry disabling, and local security policy enforcement.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Performance & driver optimization
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-cyan-400 shrink-0" /> Local firewall & endpoint protection
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* VISUAL 4-STEP PROCESS WITH IMAGES */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-emerald-400" /> OS Setup Execution Lifecycle
+                </h2>
+                <span className="text-xs text-emerald-400 font-mono">Standardized Setup Protocol</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* STEP 1 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=600&q=80" 
+                      alt="System Audit & Backup" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-emerald-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      01
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
+                        <HardDriveDownload size={14} className="text-emerald-400" /> Audit & Data Safeguard
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Verify system specs, backup critical files, extract existing licenses, and check hardware SMART diagnostics.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" 
+                      alt="Partitioning & OS Flashing" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-emerald-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      02
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
+                        <MonitorCog size={14} className="text-emerald-400" /> Partition & Installation
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Format drives, configure bootable installation media, run unattended OS deployment, and set up boot partitions.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" 
+                      alt="Driver Optimization & Suite Setup" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-emerald-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      03
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
+                        <Settings size={14} className="text-emerald-400" /> Drivers & Applications
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Install target vendor display drivers, configure development runtimes, productivity suites, and system utilities.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
+                  <div className="relative h-36 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" 
+                      alt="Hardening & Quality Assurance" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-xl bg-emerald-400 text-slate-950 backdrop-blur-md flex items-center justify-center font-extrabold text-xs shadow-lg">
+                      04
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-white text-sm mb-1 group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
+                        <ShieldCheck size={14} className="text-emerald-400" /> Security Hardening & QA
+                      </h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">
+                        Disable background telemetry, execute system stress tests, setup automated backups, and verify stability.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE OS ESTIMATOR CALCULATOR */}
+            <div className="bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4">
+                <div className="p-2.5 bg-emerald-950/60 text-emerald-400 rounded-xl border border-emerald-800/40">
+                  <Calculator size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">OS Setup & System Optimization Estimator</h3>
+                  <p className="text-xs text-slate-400">Calculate setup hours, completion timeframe, and software licensing budget</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* NUMBER OF WORKSTATIONS */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <MonitorCog size={14} className="text-emerald-400" /> Workstations / Systems to Configure
+                  </label>
+                  <div className="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="30" 
+                      value={osConfig.workstations}
+                      onChange={(e) => setOsConfig(prev => ({ ...prev, workstations: parseInt(e.target.value) }))}
+                      className="w-full accent-emerald-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-emerald-400 font-mono w-20 text-right">
+                      {osConfig.workstations} System{osConfig.workstations > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* OS TYPE SELECTION */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <Sliders size={14} className="text-emerald-400" /> Target OS Architecture
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, osType: 'windows' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        osConfig.osType === 'windows'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Windows
+                    </button>
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, osType: 'linux' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        osConfig.osType === 'linux'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Linux OS
+                    </button>
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, osType: 'dual' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        osConfig.osType === 'dual'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Dual-Boot
+                    </button>
+                  </div>
+                </div>
+
+                {/* SOFTWARE SUITE SELECTION */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <CheckSquare size={14} className="text-emerald-400" /> Software & Utility Package
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, suite: 'basic' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        osConfig.suite === 'basic'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Standard Essentials
+                    </button>
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, suite: 'enterprise' }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        osConfig.suite === 'enterprise'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Enterprise & Developer
+                    </button>
+                  </div>
+                </div>
+
+                {/* SECURITY HARDENING TOGGLE */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-emerald-400" /> Security Policy Hardening
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, securityHardening: false }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        !osConfig.securityHardening
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Basic Firewall
+                    </button>
+                    <button
+                      onClick={() => setOsConfig(prev => ({ ...prev, securityHardening: true }))}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        osConfig.securityHardening
+                          ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      Full Policy Hardening
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* ESTIMATION SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 bg-slate-950/50 p-4 rounded-2xl">
+                <div>
+                  <span className="text-xs text-slate-400">Estimated Deployment Time:</span>
+                  <p className="text-2xl font-extrabold text-lime-400 font-mono">{osEst.totalHours} Hours ({osEst.estimatedDays} Day{osEst.estimatedDays > 1 ? 's' : ''})</p>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400">Est. Software Budget Allocation:</span>
+                  <p className="text-2xl font-extrabold text-emerald-400 font-mono">~${osEst.softwareBudgetEstimate}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="p-6 bg-linear-to-r from-slate-900 via-slate-900 to-emerald-950/30 border border-emerald-800/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-white text-base">Optimize and secure your computer systems</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Schedule system deployments or OS optimization for your business or individual setup.</p>
+              </div>
+              <button 
+                onClick={() => alert("OS setup consultation requested!")}
+                className="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl transition-colors cursor-pointer text-xs whitespace-nowrap flex items-center gap-2"
+              >
+                Request OS Setup Audit
+                <ExternalLink size={14} />
+              </button>
+            </div>
           </div>
         );
 
       case 'software':
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-6">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
@@ -1660,14 +2054,14 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">Custom Software & Task Automation</h1>
-            <p className="text-slate-400 text-sm">Automated Python scripts for data manipulation, folder sorting, and specialized Java utility software.</p>
+            <h1 className="text-2xl font-extrabold text-white">Custom Task Automation & Scripts</h1>
+            <p className="text-slate-400 text-sm">Automating manual administrative workflows using lightweight Python & Java tools.</p>
           </div>
         );
 
       case 'diagnostics':
         return (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-5xl mx-auto space-y-6">
             <button 
               onClick={() => setActiveTab('overview')}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-lime-400 transition-colors group cursor-pointer"
@@ -1675,8 +2069,8 @@ function App() {
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back to Overview Menu
             </button>
-            <h1 className="text-3xl font-extrabold text-white">System Diagnostics & Security Hardening</h1>
-            <p className="text-slate-400 text-sm">BSOD error dump troubleshooting, malware extraction, password vault configuration, and 2FA deployment.</p>
+            <h1 className="text-2xl font-extrabold text-white">Diagnostics & Cyber Security</h1>
+            <p className="text-slate-400 text-sm">Hardware troubleshooting, malware remediation, and security posture audits.</p>
           </div>
         );
 
@@ -1686,138 +2080,94 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-lime-500 selection:text-slate-950">
-      
-      {/* WELCOME PORTAL OVERLAY */}
-      {!hasEntered && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950 overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80')" }}
-          ></div>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-lime-500 selection:text-slate-950">
+      {!hasEntered ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-radial from-slate-900 to-slate-950">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-lime-500/10 rounded-full blur-[120px] pointer-events-none"></div>
           
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 bg-lime-500/15 rounded-full blur-[140px] pointer-events-none"></div>
-
-          <div className="relative text-center max-w-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-2xl p-8 md:p-12 rounded-3xl shadow-2xl border-t-lime-500/30">
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-lime-400 uppercase bg-lime-950/60 px-4 py-1.5 rounded-full border border-lime-800/50 mb-6">
-              <Sparkles size={14} className="animate-pulse" />
-              Secure. Optimize. Automate.
+          <div className="relative z-10 max-w-xl space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-lime-500/30 text-lime-400 text-xs font-mono shadow-lg">
+              <Zap size={14} className="animate-pulse" /> Optima IT Consulting Portal
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-none mb-6">
+
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white">
               OPTIMA <span className="text-lime-400">IT SOLUTIONS</span>
             </h1>
-            
-            <p className="text-slate-300 leading-relaxed text-sm md:text-base mb-8 max-w-lg mx-auto">
-              We design secure network architectures, build custom web applications, structure data analytics, and engineer workflow automation tools.
+
+            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+              Explore our comprehensive portfolio of tech solutions—spanning Cloud Migration, Custom Web Apps, Network Topologies, OS Setup, and Business Intelligence.
             </p>
 
-            <button 
+            <button
               onClick={() => setHasEntered(true)}
-              className="inline-flex items-center gap-3 bg-lime-400 text-slate-950 font-bold px-8 py-4 rounded-xl hover:bg-lime-300 transition-all duration-300 cursor-pointer shadow-lg shadow-lime-400/20 group text-base"
+              className="inline-flex items-center gap-3 bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold px-8 py-4 rounded-2xl transition-all transform hover:scale-105 shadow-xl shadow-lime-400/20 cursor-pointer text-sm"
             >
-              Explore Catalog & Control Panel
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              Enter Service Catalog <ArrowRight size={18} />
             </button>
           </div>
         </div>
-      )}
-
-      {/* TOP NAVIGATION BAR */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 h-16 flex items-center justify-between px-6">
-        <div className="flex flex-col justify-center">
-          <span className="font-extrabold tracking-wider text-xl text-white leading-none">
-            OPTIMA<span className="text-lime-400"> IT SOLUTIONS</span>
-          </span>
-          <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mt-1">
-            Secure. Optimize. Automate.
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime-500"></span>
-          </span>
-          <span className="text-xs font-semibold text-slate-300">Live Portal</span>
-        </div>
-      </header>
-
-      {/* MAIN CONTAINER */}
-      <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden">
-        
-        {/* SIDEBAR NAVIGATION */}
-        <aside 
-          className={`bg-slate-900 border-r border-slate-800/80 flex flex-col justify-between p-4 transition-all duration-300 ease-in-out shrink-0 ${
-            isExpanded ? 'w-64' : 'w-20'
-          }`}
-        >
-          <div>
-            <div className={`flex items-center mb-6 ${isExpanded ? 'justify-end' : 'justify-center'}`}>
+      ) : (
+        <div className="flex-1 flex overflow-hidden">
+          {/* SIDEBAR NAVIGATION */}
+          <aside className={`${isExpanded ? 'w-64' : 'w-20'} bg-slate-900/80 border-r border-slate-800/80 flex flex-col transition-all duration-300 shrink-0 relative backdrop-blur-xl z-20`}>
+            <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+              {isExpanded ? (
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-lime-400 text-slate-950 flex items-center justify-center font-black text-base shadow-lg shadow-lime-400/20">
+                    O
+                  </div>
+                  <span className="font-extrabold tracking-wider text-white text-sm">OPTIMA <span className="text-lime-400">IT</span></span>
+                </div>
+              ) : (
+                <div className="w-8 h-8 rounded-xl bg-lime-400 text-slate-950 flex items-center justify-center font-black text-base mx-auto">
+                  O
+                </div>
+              )}
               <button 
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-lime-400 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer hidden md:block"
               >
-                {isExpanded ? <ChevronLeft size={20} /> : <Menu size={20} />}
+                <ChevronLeft size={16} className={`transition-transform duration-300 ${!isExpanded ? 'rotate-180' : ''}`} />
               </button>
             </div>
 
-            <nav className="space-y-1.5">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3.5 p-3 rounded-xl font-medium transition-all duration-200 cursor-pointer text-left text-xs ${
-                    activeTab === item.id 
-                      ? 'bg-lime-950/50 text-lime-400 border border-lime-500/30' 
-                      : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
-                  }`}
-                >
-                  <div className="shrink-0">{item.icon}</div>
-                  <span className={`transition-opacity duration-300 whitespace-nowrap font-semibold ${
-                    isExpanded ? 'opacity-100' : 'opacity-0 hidden'
-                  }`}>
-                    {item.label}
-                  </span>
-                </button>
-              ))}
+            <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
+              {navItems.map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                      isActive 
+                        ? 'bg-lime-400 text-slate-950 shadow-lg shadow-lime-400/10 font-bold' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    }`}
+                  >
+                    <span className="shrink-0">{item.icon}</span>
+                    {isExpanded && <span className="truncate">{item.label}</span>}
+                  </button>
+                );
+              })}
             </nav>
-          </div>
 
-          <div className="border-t border-slate-800/80 pt-4 flex flex-col gap-3">
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-9 h-9 rounded-full bg-lime-400 font-bold text-slate-950 flex items-center justify-center shrink-0 text-xs">
-                RM
-              </div>
-              {isExpanded && (
-                <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-semibold text-white truncate">Rebone Motswana</span>
-                  <span className="text-[10px] text-lime-400 truncate">Lead IT Consultant</span>
-                </div>
-              )}
+            <div className="p-3 border-t border-slate-800/80">
+              <button
+                onClick={() => setHasEntered(false)}
+                className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-red-950/20 transition-colors cursor-pointer"
+              >
+                <LogOut size={18} className="shrink-0" />
+                {isExpanded && <span>Exit Catalog</span>}
+              </button>
             </div>
+          </aside>
 
-            <button
-              onClick={() => {
-                setHasEntered(false);
-                setActiveTab('overview');
-              }}
-              className={`flex items-center gap-3.5 p-2 rounded-xl text-xs font-semibold text-red-400 hover:bg-red-950/30 transition-all cursor-pointer ${
-                isExpanded ? 'w-full px-3' : 'w-9 h-9 justify-center mx-auto'
-              }`}
-            >
-              <LogOut size={16} className="shrink-0" />
-              {isExpanded && <span>Exit Portal</span>}
-            </button>
-          </div>
-        </aside>
-
-        {/* MAIN CONTENT AREA */}
-        <main className="flex-1 p-6 md:p-10 overflow-y-auto bg-slate-950">
-          {renderMainContent()}
-        </main>
-
-      </div>
+          {/* MAIN CONTENT AREA */}
+          <main className="flex-1 overflow-y-auto bg-slate-950 p-6 md:p-10">
+            {renderMainContent()}
+          </main>
+        </div>
+      )}
     </div>
   );
 }
